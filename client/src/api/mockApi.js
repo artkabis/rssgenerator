@@ -3,37 +3,53 @@
  * Utilise les données JSON statiques au lieu du backend
  */
 
+// Détection du mode statique (GitHub Pages ou fichier local)
 const IS_STATIC_MODE = import.meta.env.VITE_STATIC_MODE === 'true' ||
-  window.location.hostname.includes('github.io');
+  window.location.hostname.includes('github.io') ||
+  window.location.protocol === 'file:' ||
+  !window.location.hostname ||
+  window.location.hostname === '';
 
 // Cache pour les données
 let postsCache = null;
 let configCache = null;
 
 /**
+ * Détermine le chemin de base pour les requêtes
+ */
+function getBasePath() {
+  // Pour GitHub Pages ou fichier local, utilise des chemins relatifs
+  return './';
+}
+
+/**
  * Charge les données depuis les fichiers JSON statiques
  */
 async function loadStaticData() {
+  const basePath = getBasePath();
+
   if (!postsCache) {
     try {
-      const postsResponse = await fetch('/api/posts.json');
+      const postsResponse = await fetch(`${basePath}api/posts.json`);
+      if (!postsResponse.ok) throw new Error('Posts not found');
       postsCache = await postsResponse.json();
     } catch (e) {
-      console.warn('Could not load static posts, using empty array');
+      console.warn('Could not load static posts:', e.message);
       postsCache = [];
     }
   }
 
   if (!configCache) {
     try {
-      const configResponse = await fetch('/api/config.json');
+      const configResponse = await fetch(`${basePath}api/config.json`);
+      if (!configResponse.ok) throw new Error('Config not found');
       configCache = await configResponse.json();
     } catch (e) {
-      console.warn('Could not load static config, using defaults');
+      console.warn('Could not load static config:', e.message);
       configCache = {
         title: 'RSS Generator Demo',
         description: 'Démonstration du générateur RSS',
-        link: window.location.origin,
+        link: window.location.origin || window.location.href,
         language: 'fr-FR',
         copyright: '© 2024'
       };

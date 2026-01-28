@@ -94,7 +94,8 @@ jobs:
     name: Deploy Demo
     runs-on: ubuntu-latest
     needs: build-client
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    # Déploie sur main ou manuellement
+    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/claude/')) && github.event_name == 'push'
     permissions:
       contents: read
       pages: write
@@ -119,6 +120,13 @@ jobs:
           cp demo/data/posts.json ./dist/api/posts.json
           cp demo/data/config.json ./dist/api/config.json
           cp demo/rss/feed.xml ./dist/rss/feed.xml
+          # Créer un fichier .nojekyll pour désactiver Jekyll
+          touch ./dist/.nojekyll
+          # Vérifier la structure
+          echo "📁 Structure du dossier dist:"
+          ls -la ./dist/
+          ls -la ./dist/api/
+          ls -la ./dist/rss/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

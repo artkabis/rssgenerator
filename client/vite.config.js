@@ -3,6 +3,13 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  // Base path - utilise './' pour les chemins relatifs (compatible GitHub Pages)
+  base: './',
+  build: {
+    outDir: 'dist',
+    // Génère des chemins relatifs pour les assets
+    assetsDir: 'assets',
+  },
   server: {
     port: 5173,
     proxy: {
