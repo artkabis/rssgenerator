@@ -10,8 +10,10 @@ import {
   Check,
   Rss,
   ExternalLink,
-  Copy
+  Copy,
+  AlertCircle
 } from 'lucide-react'
+import api from '../api/mockApi'
 
 function Settings() {
   const [config, setConfig] = useState({
@@ -27,6 +29,7 @@ function Settings() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [copied, setCopied] = useState(false)
+  const isDemo = api.isStaticMode()
 
   useEffect(() => {
     fetchConfig()
@@ -34,8 +37,7 @@ function Settings() {
 
   const fetchConfig = async () => {
     try {
-      const response = await fetch('/api/config')
-      const data = await response.json()
+      const data = await api.getConfig()
       setConfig(data)
     } catch (error) {
       console.error('Erreur lors du chargement de la configuration:', error)
@@ -54,13 +56,7 @@ function Settings() {
     setSaving(true)
 
     try {
-      const response = await fetch('/api/config', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(config)
-      })
-
-      if (!response.ok) throw new Error('Erreur lors de la sauvegarde')
+      await api.updateConfig(config)
 
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)

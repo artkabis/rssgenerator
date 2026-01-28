@@ -1,15 +1,17 @@
 import { Outlet, NavLink } from 'react-router-dom'
 import { Rss, Home, PlusCircle, Settings, Download, RefreshCw } from 'lucide-react'
 import { useState } from 'react'
+import api from '../api/mockApi'
 
 function Layout() {
   const [isRegenerating, setIsRegenerating] = useState(false)
+  const isDemo = api.isStaticMode()
 
   const handleRegenerate = async () => {
     setIsRegenerating(true)
     try {
-      await fetch('/api/rss/regenerate', { method: 'POST' })
-      alert('Flux RSS régénéré avec succès !')
+      const result = await api.regenerateRSS()
+      alert(isDemo ? 'Mode démo : régénération simulée' : 'Flux RSS régénéré avec succès !')
     } catch (error) {
       alert('Erreur lors de la régénération')
     }
@@ -17,7 +19,7 @@ function Layout() {
   }
 
   const handleDownload = () => {
-    window.open('/api/rss/download', '_blank')
+    window.open('/rss/feed.xml', '_blank')
   }
 
   return (

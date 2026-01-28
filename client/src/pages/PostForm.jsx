@@ -12,14 +12,17 @@ import {
   Film,
   Plus,
   Trash2,
-  Eye
+  Eye,
+  AlertCircle
 } from 'lucide-react'
 import { sanitizeHtml, sanitizeFilename } from '../utils/sanitize'
+import api from '../api/mockApi'
 
 function PostForm() {
   const { id } = useParams()
   const navigate = useNavigate()
   const isEditing = Boolean(id)
+  const isDemo = api.isStaticMode()
 
   const [loading, setLoading] = useState(isEditing)
   const [saving, setSaving] = useState(false)
@@ -50,9 +53,8 @@ function PostForm() {
 
   const fetchPost = async () => {
     try {
-      const response = await fetch(`/api/posts/${id}`)
-      if (!response.ok) throw new Error('Post non trouvé')
-      const post = await response.json()
+      const post = await api.getPost(id)
+      if (!post) throw new Error('Post non trouvé')
 
       setFormData({
         title: post.title,
@@ -137,15 +139,15 @@ function PostForm() {
         submitData.append('existingMedia', JSON.stringify(existingMedia))
       }
 
-      const url = isEditing ? `/api/posts/${id}` : '/api/posts'
-      const method = isEditing ? 'PUT' : 'POST'
+      if (isEditing) {
+        await api.updatePost(id, submitData)
+      } else {
+        await api.createPost(submitData)
+      }
 
-      const response = await fetch(url, {
-        method,
-        body: submitData
-      })
-
-      if (!response.ok) throw new Error('Erreur lors de la sauvegarde')
+      if (isDemo) {
+        alert('Mode démo : les modifications ne sont pas sauvegardées')
+      }
 
       navigate('/')
     } catch (error) {

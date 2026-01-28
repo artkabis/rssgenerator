@@ -10,15 +10,18 @@ import {
   FileText,
   Rss,
   Search,
-  Filter
+  Filter,
+  AlertCircle
 } from 'lucide-react'
 import { stripHtml, escapeHtml } from '../utils/sanitize'
+import api from '../api/mockApi'
 
 function Dashboard() {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [deleteConfirm, setDeleteConfirm] = useState(null)
+  const isDemo = api.isStaticMode()
 
   useEffect(() => {
     fetchPosts()
@@ -26,8 +29,7 @@ function Dashboard() {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch('/api/posts')
-      const data = await response.json()
+      const data = await api.getPosts()
       setPosts(data)
     } catch (error) {
       console.error('Erreur lors du chargement des posts:', error)
@@ -37,7 +39,7 @@ function Dashboard() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`/api/posts/${id}`, { method: 'DELETE' })
+      await api.deletePost(id)
       setPosts(posts.filter(post => post.id !== id))
       setDeleteConfirm(null)
     } catch (error) {
@@ -71,6 +73,19 @@ function Dashboard() {
 
   return (
     <div className="space-y-6 animate-fadeIn">
+      {/* Demo Mode Banner */}
+      {isDemo && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-500 shrink-0" />
+          <div>
+            <p className="text-amber-800 font-medium">Mode Démonstration</p>
+            <p className="text-amber-600 text-sm">
+              Les modifications ne seront pas sauvegardées. Déployez votre propre instance pour un usage complet.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
