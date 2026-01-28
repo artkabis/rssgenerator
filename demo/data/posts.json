@@ -1,0 +1,91 @@
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "Bienvenue sur RSS Generator",
+    "content": "<p>Découvrez notre <strong>générateur de flux RSS</strong> avec un dashboard moderne et intuitif.</p><p>Cette application vous permet de :</p><ul><li>Créer et gérer vos posts RSS facilement</li><li>Ajouter des images et médias à vos publications</li><li>Générer automatiquement un fichier XML valide</li><li>Personnaliser les métadonnées de votre flux</li></ul><p>Commencez dès maintenant en créant votre premier post !</p>",
+    "author": "Équipe RSS Generator",
+    "pubDate": "2024-01-15T10:00:00.000Z",
+    "thumbnail": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80",
+    "media": [
+      {
+        "url": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "dashboard-preview.jpg"
+      }
+    ],
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+    "title": "Les meilleures pratiques pour un flux RSS efficace",
+    "content": "<h2>Optimisez votre flux RSS</h2><p>Un flux RSS bien structuré améliore la <em>visibilité</em> de votre contenu. Voici quelques conseils :</p><ol><li><strong>Titres accrocheurs</strong> : Utilisez des titres clairs et descriptifs</li><li><strong>Descriptions complètes</strong> : Fournissez suffisamment de contexte</li><li><strong>Images de qualité</strong> : Les vignettes attirent l'attention</li><li><strong>Mise à jour régulière</strong> : Publiez du contenu frais</li></ol><blockquote>Un bon flux RSS est la clé d'une audience fidèle.</blockquote>",
+    "author": "Marie Dupont",
+    "pubDate": "2024-01-14T14:30:00.000Z",
+    "thumbnail": "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800&q=80",
+    "media": [
+      {
+        "url": "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "analytics-dashboard.jpg"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "content-strategy.jpg"
+      }
+    ],
+    "createdAt": "2024-01-14T14:30:00.000Z",
+    "updatedAt": "2024-01-14T14:30:00.000Z"
+  },
+  {
+    "id": "c3d4e5f6-a7b8-9012-cdef-345678901234",
+    "title": "Nouveautés de la version 1.0",
+    "content": "<p>Nous sommes ravis de vous présenter la <strong>version 1.0</strong> de RSS Generator !</p><h3>Nouvelles fonctionnalités</h3><ul><li>Interface utilisateur moderne avec Tailwind CSS</li><li>Upload de médias multiples (images, vidéos, PDF)</li><li>Mode aperçu en temps réel</li><li>Configuration complète du flux RSS</li><li>Sécurité renforcée contre les injections XSS</li></ul><p>Nous travaillons déjà sur la prochaine version avec encore plus de fonctionnalités !</p>",
+    "author": "Jean Martin",
+    "pubDate": "2024-01-13T09:15:00.000Z",
+    "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+    "media": [],
+    "createdAt": "2024-01-13T09:15:00.000Z",
+    "updatedAt": "2024-01-13T09:15:00.000Z"
+  },
+  {
+    "id": "d4e5f6a7-b8c9-0123-def0-456789012345",
+    "title": "Guide : Intégrer votre flux RSS à votre site web",
+    "content": "<p>Voici comment intégrer facilement votre flux RSS à votre site web :</p><h3>1. Ajoutez la balise link dans votre head</h3><pre><code>&lt;link rel=\"alternate\" type=\"application/rss+xml\" title=\"Mon Flux\" href=\"/rss/feed.xml\" /&gt;</code></pre><h3>2. Affichez l'icône RSS</h3><p>Utilisez une icône RSS cliquable pour rediriger vers votre flux.</p><h3>3. Partagez l'URL</h3><p>Communiquez l'URL de votre flux à vos lecteurs pour qu'ils puissent s'abonner.</p><p>C'est aussi simple que ça ! 🎉</p>",
+    "author": "Sophie Bernard",
+    "pubDate": "2024-01-12T16:45:00.000Z",
+    "thumbnail": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80",
+    "media": [
+      {
+        "url": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "code-example.jpg"
+      }
+    ],
+    "createdAt": "2024-01-12T16:45:00.000Z",
+    "updatedAt": "2024-01-12T16:45:00.000Z"
+  },
+  {
+    "id": "e5f6a7b8-c9d0-1234-ef01-567890123456",
+    "title": "Événement : Webinaire sur la syndication de contenu",
+    "content": "<p>Rejoignez-nous pour un <strong>webinaire gratuit</strong> sur la syndication de contenu via RSS.</p><h3>Au programme :</h3><ul><li>Introduction aux flux RSS et Atom</li><li>Démonstration de RSS Generator</li><li>Questions/Réponses avec nos experts</li></ul><p><strong>Date :</strong> 20 janvier 2024 à 14h00 (CET)</p><p><strong>Durée :</strong> 1 heure</p><p>Inscrivez-vous dès maintenant pour recevoir le lien de connexion !</p>",
+    "author": "Équipe RSS Generator",
+    "pubDate": "2024-01-11T11:00:00.000Z",
+    "thumbnail": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
+    "media": [
+      {
+        "url": "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "webinar-setup.jpg"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "presentation.jpg"
+      }
+    ],
+    "createdAt": "2024-01-11T11:00:00.000Z",
+    "updatedAt": "2024-01-11T11:00:00.000Z"
+  }
+]

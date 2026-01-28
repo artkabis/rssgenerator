@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:media="http://search.yahoo.com/mrss/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>RSS Generator - Flux de démonstration</title>
+    <link>https://example.com</link>
+    <description>Flux RSS de démonstration généré par RSS Generator Dashboard. Découvrez comment créer et gérer vos propres flux RSS facilement.</description>
+    <language>fr-FR</language>
+    <copyright>© 2024 RSS Generator</copyright>
+    <lastBuildDate>Mon, 15 Jan 2024 12:00:00 GMT</lastBuildDate>
+    <generator>RSS Generator Dashboard v1.0</generator>
+    <atom:link href="https://example.com/rss/feed.xml" rel="self" type="application/rss+xml" />
+    <managingEditor>demo@rssgenerator.example.com</managingEditor>
+    <webMaster>webmaster@rssgenerator.example.com</webMaster>
+    <item>
+      <title>Bienvenue sur RSS Generator</title>
+      <link>https://example.com/post/a1b2c3d4-e5f6-7890-abcd-ef1234567890</link>
+      <guid isPermaLink="true">https://example.com/post/a1b2c3d4-e5f6-7890-abcd-ef1234567890</guid>
+      <pubDate>Mon, 15 Jan 2024 10:00:00 GMT</pubDate>
+      <author>Équipe RSS Generator</author>
+      <description><![CDATA[<p>Découvrez notre <strong>générateur de flux RSS</strong> avec un dashboard moderne et intuitif.</p><p>Cette application vous permet de :</p><ul><li>Créer et gérer vos posts RSS facilement</li><li>Ajouter des images et médias à vos publications</li><li>Générer automatiquement un fichier XML valide</li><li>Personnaliser les métadonnées de votre flux</li></ul><p>Commencez dès maintenant en créant votre premier post !</p>]]></description>
+      <enclosure url="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&amp;q=80" type="image/jpeg" length="0" />
+      <media:thumbnail url="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&amp;q=80" />
+      <media:group>
+        <media:content url="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&amp;q=80" type="image/jpeg" medium="image">
+          <media:title>dashboard-preview.jpg</media:title>
+        </media:content>
+      </media:group>
+    </item>
+    <item>
+      <title>Les meilleures pratiques pour un flux RSS efficace</title>
+      <link>https://example.com/post/b2c3d4e5-f6a7-8901-bcde-f23456789012</link>
+      <guid isPermaLink="true">https://example.com/post/b2c3d4e5-f6a7-8901-bcde-f23456789012</guid>
+      <pubDate>Sun, 14 Jan 2024 14:30:00 GMT</pubDate>
+      <author>Marie Dupont</author>
+      <description><![CDATA[<h2>Optimisez votre flux RSS</h2><p>Un flux RSS bien structuré améliore la <em>visibilité</em> de votre contenu. Voici quelques conseils :</p><ol><li><strong>Titres accrocheurs</strong> : Utilisez des titres clairs et descriptifs</li><li><strong>Descriptions complètes</strong> : Fournissez suffisamment de contexte</li><li><strong>Images de qualité</strong> : Les vignettes attirent l'attention</li><li><strong>Mise à jour régulière</strong> : Publiez du contenu frais</li></ol><blockquote>Un bon flux RSS est la clé d'une audience fidèle.</blockquote>]]></description>
+      <enclosure url="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800&amp;q=80" type="image/jpeg" length="0" />
+      <media:thumbnail url="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800&amp;q=80" />
+      <media:group>
+        <media:content url="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&amp;q=80" type="image/jpeg" medium="image">
+          <media:title>analytics-dashboard.jpg</media:title>
+        </media:content>
+        <media:content url="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&amp;q=80" type="image/jpeg" medium="image">
+          <media:title>content-strategy.jpg</media:title>
+        </media:content>
+      </media:group>
+    </item>
+    <item>
+      <title>Nouveautés de la version 1.0</title>
+      <link>https://example.com/post/c3d4e5f6-a7b8-9012-cdef-345678901234</link>
+      <guid isPermaLink="true">https://example.com/post/c3d4e5f6-a7b8-9012-cdef-345678901234</guid>
+      <pubDate>Sat, 13 Jan 2024 09:15:00 GMT</pubDate>
+      <author>Jean Martin</author>
+      <description><![CDATA[<p>Nous sommes ravis de vous présenter la <strong>version 1.0</strong> de RSS Generator !</p><h3>Nouvelles fonctionnalités</h3><ul><li>Interface utilisateur moderne avec Tailwind CSS</li><li>Upload de médias multiples (images, vidéos, PDF)</li><li>Mode aperçu en temps réel</li><li>Configuration complète du flux RSS</li><li>Sécurité renforcée contre les injections XSS</li></ul><p>Nous travaillons déjà sur la prochaine version avec encore plus de fonctionnalités !</p>]]></description>
+      <enclosure url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&amp;q=80" type="image/jpeg" length="0" />
+      <media:thumbnail url="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&amp;q=80" />
+    </item>
+    <item>
+      <title>Guide : Intégrer votre flux RSS à votre site web</title>
+      <link>https://example.com/post/d4e5f6a7-b8c9-0123-def0-456789012345</link>
+      <guid isPermaLink="true">https://example.com/post/d4e5f6a7-b8c9-0123-def0-456789012345</guid>
+      <pubDate>Fri, 12 Jan 2024 16:45:00 GMT</pubDate>
+      <author>Sophie Bernard</author>
+      <description><![CDATA[<p>Voici comment intégrer facilement votre flux RSS à votre site web :</p><h3>1. Ajoutez la balise link dans votre head</h3><pre><code>&lt;link rel="alternate" type="application/rss+xml" title="Mon Flux" href="/rss/feed.xml" /&gt;</code></pre><h3>2. Affichez l'icône RSS</h3><p>Utilisez une icône RSS cliquable pour rediriger vers votre flux.</p><h3>3. Partagez l'URL</h3><p>Communiquez l'URL de votre flux à vos lecteurs pour qu'ils puissent s'abonner.</p><p>C'est aussi simple que ça ! 🎉</p>]]></description>
+      <enclosure url="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&amp;q=80" type="image/jpeg" length="0" />
+      <media:thumbnail url="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&amp;q=80" />
+      <media:group>
+        <media:content url="https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=600&amp;q=80" type="image/jpeg" medium="image">
+          <media:title>code-example.jpg</media:title>
+        </media:content>
+      </media:group>
+    </item>
+    <item>
+      <title>Événement : Webinaire sur la syndication de contenu</title>
+      <link>https://example.com/post/e5f6a7b8-c9d0-1234-ef01-567890123456</link>
+      <guid isPermaLink="true">https://example.com/post/e5f6a7b8-c9d0-1234-ef01-567890123456</guid>
+      <pubDate>Thu, 11 Jan 2024 11:00:00 GMT</pubDate>
+      <author>Équipe RSS Generator</author>
+      <description><![CDATA[<p>Rejoignez-nous pour un <strong>webinaire gratuit</strong> sur la syndication de contenu via RSS.</p><h3>Au programme :</h3><ul><li>Introduction aux flux RSS et Atom</li><li>Démonstration de RSS Generator</li><li>Questions/Réponses avec nos experts</li></ul><p><strong>Date :</strong> 20 janvier 2024 à 14h00 (CET)</p><p><strong>Durée :</strong> 1 heure</p><p>Inscrivez-vous dès maintenant pour recevoir le lien de connexion !</p>]]></description>
+      <enclosure url="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&amp;q=80" type="image/jpeg" length="0" />
+      <media:thumbnail url="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&amp;q=80" />
+      <media:group>
+        <media:content url="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=600&amp;q=80" type="image/jpeg" medium="image">
+          <media:title>webinar-setup.jpg</media:title>
+        </media:content>
+        <media:content url="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&amp;q=80" type="image/jpeg" medium="image">
+          <media:title>presentation.jpg</media:title>
+        </media:content>
+      </media:group>
+    </item>
+  </channel>
+</rss>

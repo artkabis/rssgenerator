@@ -1,0 +1,9 @@
+{
+  "title": "RSS Generator - Flux de démonstration",
+  "description": "Flux RSS de démonstration généré par RSS Generator Dashboard. Découvrez comment créer et gérer vos propres flux RSS facilement.",
+  "link": "https://example.com",
+  "language": "fr-FR",
+  "copyright": "© 2024 RSS Generator",
+  "managingEditor": "demo@rssgenerator.example.com",
+  "webMaster": "webmaster@rssgenerator.example.com"
+}
