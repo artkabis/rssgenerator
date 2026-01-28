@@ -6,6 +6,17 @@ on:
   pull_request:
     branches: [main]
 
+# Permissions globales pour GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Autoriser un seul déploiement à la fois
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   # Job 1: Lint et vérification du code
   lint:
@@ -130,8 +141,6 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
-        with:
-          enablement: true
 
       - name: Upload to GitHub Pages
         uses: actions/upload-pages-artifact@v3
