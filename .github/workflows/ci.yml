@@ -6,9 +6,9 @@ on:
   pull_request:
     branches: [main]
 
-# Permissions globales pour GitHub Pages
+# Permissions globales
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -100,20 +100,13 @@ jobs:
           path: client/dist
           retention-days: 7
 
-  # Job 4: Déploiement de la démo sur GitHub Pages
+  # Job 4: Déploiement de la démo sur GitHub Pages (branche gh-pages)
   deploy-demo:
     name: Deploy Demo
     runs-on: ubuntu-latest
     needs: build-client
-    # Déploie sur main ou manuellement
+    # Déploie sur main ou branches claude/*
     if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/claude/')) && github.event_name == 'push'
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -139,17 +132,16 @@ jobs:
           ls -la ./dist/api/
           ls -la ./dist/rss/
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload to GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
-
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy demo to GitHub Pages'
 
   # Job 5: Validation du flux RSS
   validate-rss:

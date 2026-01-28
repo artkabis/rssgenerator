@@ -371,13 +371,15 @@ app.use(cors({
 
 L'application peut être déployée sur GitHub Pages en mode statique (sans serveur backend).
 
-#### Prérequis
+#### Configuration GitHub Pages
 
-1. **Activer GitHub Pages manuellement** dans les paramètres du dépôt :
+1. **Activer GitHub Pages** dans les paramètres du dépôt :
    - Aller dans `Settings` > `Pages`
-   - Source : `GitHub Actions`
+   - Source : **Deploy from a branch**
+   - Branch : `gh-pages` / `/ (root)`
+   - Cliquer sur "Save"
 
-2. Le workflow CI/CD se charge du reste automatiquement.
+2. Le workflow CI/CD déploie automatiquement sur la branche `gh-pages` à chaque push.
 
 #### Fonctionnement du mode statique
 
@@ -537,11 +539,18 @@ rssgenerator/
 | xmllint manquant | Installation `libxml2-utils` dans CI |
 | Pages non activé | Permissions workflow + activation manuelle |
 
-### Correction permissions GitHub Pages (Dernier commit)
+### Correction permissions GitHub Pages (Commits précédents)
 
 - Ajout permissions globales au workflow
 - Configuration `concurrency` pour éviter les conflits
 - Suppression de `enablement: true` (nécessite activation manuelle)
+
+### Passage au déploiement branche gh-pages (Dernier commit)
+
+- Remplacement du déploiement "GitHub Actions" par déploiement branche `gh-pages`
+- Utilisation de `peaceiris/actions-gh-pages@v4` pour push automatique
+- Configuration `force_orphan: true` pour garder la branche propre
+- Plus simple à configurer : juste sélectionner la branche dans les settings
 
 ---
 
@@ -564,8 +573,10 @@ Une fois GitHub Pages activé, la démo est accessible à :
 ### Activer la démo
 
 1. Aller dans `Settings` > `Pages` du dépôt GitHub
-2. Sélectionner `Source: GitHub Actions`
-3. Le workflow déploiera automatiquement sur push
+2. Sélectionner `Source: Deploy from a branch`
+3. Sélectionner la branche `gh-pages` et `/ (root)`
+4. Cliquer sur "Save"
+5. Le workflow crée automatiquement la branche `gh-pages` au prochain push
 
 ---
 
