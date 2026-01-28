@@ -14,6 +14,7 @@ import {
   Trash2,
   Eye
 } from 'lucide-react'
+import { sanitizeHtml, sanitizeFilename } from '../utils/sanitize'
 
 function PostForm() {
   const { id } = useParams()
@@ -233,7 +234,7 @@ function PostForm() {
             <div
               className="prose max-w-none"
               dangerouslySetInnerHTML={{
-                __html: formData.content || '<p class="text-slate-400">Contenu du post...</p>'
+                __html: sanitizeHtml(formData.content) || '<p class="text-slate-400">Contenu du post...</p>'
               }}
             />
             {(existingMedia.length > 0 || media.length > 0) && (

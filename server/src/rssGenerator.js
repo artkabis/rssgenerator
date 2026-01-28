@@ -1,6 +1,7 @@
 /**
  * Générateur de flux RSS 2.0
  * Supporte les éléments standard RSS ainsi que les extensions media
+ * Sécurisé contre les injections XML et CDATA
  */
 
 /**
@@ -8,12 +9,30 @@
  */
 function escapeXml(text) {
   if (!text) return '';
-  return text
+  return String(text)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
+}
+
+/**
+ * Échappe le contenu pour CDATA
+ * Remplace ]]> par ]]]]><![CDATA[> pour éviter de casser le bloc CDATA
+ */
+function escapeForCDATA(text) {
+  if (!text) return '';
+  return String(text).replace(/\]\]>/g, ']]]]><![CDATA[>');
+}
+
+/**
+ * Valide et nettoie une URL
+ */
+function sanitizeUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  // Supprimer les caractères dangereux
+  return url.replace(/[<>"'&]/g, '').trim();
 }
 
 /**
@@ -47,37 +66,51 @@ function getMimeType(url) {
  * Génère un élément item RSS à partir d'un post
  */
 function generateItemXml(post, baseUrl) {
-  const itemUrl = `${baseUrl}/post/${post.id}`;
+  // Valider l'ID du post (doit être un UUID)
+  const safeId = /^[a-f0-9-]{36}$/i.test(post.id) ? post.id : 'invalid-id';
+  const itemUrl = `${sanitizeUrl(baseUrl)}/post/${safeId}`;
   const pubDate = formatRFC822Date(post.pubDate);
+
+  // Échapper le contenu pour CDATA afin d'éviter les injections
+  const safeContent = escapeForCDATA(post.content || '');
 
   let itemXml = `    <item>
       <title>${escapeXml(post.title)}</title>
-      <link>${itemUrl}</link>
-      <guid isPermaLink="true">${itemUrl}</guid>
+      <link>${escapeXml(itemUrl)}</link>
+      <guid isPermaLink="true">${escapeXml(itemUrl)}</guid>
       <pubDate>${pubDate}</pubDate>
       <author>${escapeXml(post.author)}</author>
-      <description><![CDATA[${post.content}]]></description>`;
+      <description><![CDATA[${safeContent}]]></description>`;
 
   // Ajouter la vignette comme enclosure si présente
-  if (post.thumbnail) {
-    const thumbnailUrl = `${baseUrl}${post.thumbnail}`;
-    const mimeType = getMimeType(post.thumbnail);
-    itemXml += `
-      <enclosure url="${thumbnailUrl}" type="${mimeType}" length="0" />
+  if (post.thumbnail && typeof post.thumbnail === 'string') {
+    // Valider que le chemin de la vignette est sûr
+    if (post.thumbnail.startsWith('/uploads/') && !post.thumbnail.includes('..')) {
+      const thumbnailUrl = `${sanitizeUrl(baseUrl)}${escapeXml(post.thumbnail)}`;
+      const mimeType = getMimeType(post.thumbnail);
+      itemXml += `
+      <enclosure url="${thumbnailUrl}" type="${escapeXml(mimeType)}" length="0" />
       <media:thumbnail url="${thumbnailUrl}" />`;
+    }
   }
 
   // Ajouter les médias
-  if (post.media && post.media.length > 0) {
+  if (post.media && Array.isArray(post.media) && post.media.length > 0) {
     itemXml += `
       <media:group>`;
     post.media.forEach(media => {
-      const mediaUrl = `${baseUrl}${media.url}`;
-      const mimeType = media.type || getMimeType(media.url);
-      itemXml += `
-        <media:content url="${mediaUrl}" type="${mimeType}" medium="${mimeType.startsWith('image') ? 'image' : mimeType.startsWith('video') ? 'video' : 'document'}">
-          <media:title>${escapeXml(media.name)}</media:title>
+      // Valider chaque média
+      if (media && media.url && typeof media.url === 'string' &&
+          media.url.startsWith('/uploads/') && !media.url.includes('..')) {
+        const mediaUrl = `${sanitizeUrl(baseUrl)}${escapeXml(media.url)}`;
+        const mimeType = media.type || getMimeType(media.url);
+        const medium = mimeType.startsWith('image') ? 'image' :
+                       mimeType.startsWith('video') ? 'video' : 'document';
+        itemXml += `
+        <media:content url="${mediaUrl}" type="${escapeXml(mimeType)}" medium="${medium}">
+          <media:title>${escapeXml(media.name || '')}</media:title>
         </media:content>`;
+      }
     });
     itemXml += `
       </media:group>`;
@@ -93,7 +126,18 @@ function generateItemXml(post, baseUrl) {
  * Génère le flux RSS complet
  */
 export function generateRSSFeed(posts, config) {
-  const baseUrl = config.link || 'http://localhost:3001';
+  // Valider et nettoyer la configuration
+  const safeConfig = {
+    title: escapeXml(config.title || 'Mon Flux RSS'),
+    description: escapeXml(config.description || ''),
+    link: sanitizeUrl(config.link) || 'http://localhost:3001',
+    language: /^[a-z]{2}(-[A-Z]{2})?$/.test(config.language) ? config.language : 'fr-FR',
+    copyright: escapeXml(config.copyright || ''),
+    managingEditor: escapeXml(config.managingEditor || ''),
+    webMaster: escapeXml(config.webMaster || '')
+  };
+
+  const baseUrl = safeConfig.link;
   const buildDate = formatRFC822Date(new Date().toISOString());
 
   let rssXml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -102,23 +146,23 @@ export function generateRSSFeed(posts, config) {
   xmlns:media="http://search.yahoo.com/mrss/"
   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>${escapeXml(config.title)}</title>
+    <title>${safeConfig.title}</title>
     <link>${escapeXml(baseUrl)}</link>
-    <description>${escapeXml(config.description)}</description>
-    <language>${escapeXml(config.language || 'fr-FR')}</language>
-    <copyright>${escapeXml(config.copyright)}</copyright>
+    <description>${safeConfig.description}</description>
+    <language>${safeConfig.language}</language>
+    <copyright>${safeConfig.copyright}</copyright>
     <lastBuildDate>${buildDate}</lastBuildDate>
     <generator>RSS Generator Dashboard v1.0</generator>
-    <atom:link href="${baseUrl}/rss/feed.xml" rel="self" type="application/rss+xml" />`;
+    <atom:link href="${escapeXml(baseUrl)}/rss/feed.xml" rel="self" type="application/rss+xml" />`;
 
-  if (config.managingEditor) {
+  if (safeConfig.managingEditor) {
     rssXml += `
-    <managingEditor>${escapeXml(config.managingEditor)}</managingEditor>`;
+    <managingEditor>${safeConfig.managingEditor}</managingEditor>`;
   }
 
-  if (config.webMaster) {
+  if (safeConfig.webMaster) {
     rssXml += `
-    <webMaster>${escapeXml(config.webMaster)}</webMaster>`;
+    <webMaster>${safeConfig.webMaster}</webMaster>`;
   }
 
   // Ajouter les posts triés par date de publication (plus récent en premier)

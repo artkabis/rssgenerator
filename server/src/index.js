@@ -1,11 +1,23 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { generateRSSFeed, parseRSSFeed } from './rssGenerator.js';
+import { generateRSSFeed } from './rssGenerator.js';
+import {
+  sanitizeHtml,
+  sanitizeText,
+  validateFileType,
+  isValidUUID,
+  isValidMediaPath,
+  validateExistingMedia,
+  validatePostData,
+  validateConfigData
+} from './security.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,13 +25,85 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-app.use('/rss', express.static(path.join(__dirname, '../rss')));
+// Configuration CORS sécurisée
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : ['http://localhost:5173', 'http://localhost:3001'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  maxAge: 86400 // 24 heures
+};
 
-// Configuration Multer pour l'upload de fichiers
+// Rate limiting global
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Maximum 100 requêtes par fenêtre
+  message: { error: 'Trop de requêtes, veuillez réessayer plus tard' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+// Rate limiting plus strict pour les uploads
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 heure
+  max: 30, // Maximum 30 uploads par heure
+  message: { error: 'Limite d\'upload atteinte, veuillez réessayer plus tard' }
+});
+
+// Middleware de sécurité
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      scriptSrc: ["'self'"],
+      connectSrc: ["'self'"]
+    }
+  },
+  crossOriginEmbedderPolicy: false // Pour permettre le chargement des images
+}));
+
+app.use(cors(corsOptions));
+app.use(globalLimiter);
+app.use(express.json({ limit: '1mb' })); // Limiter la taille du body JSON
+
+// Servir les fichiers statiques avec headers de sécurité
+app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
+  setHeaders: (res, filePath) => {
+    // Empêcher l'exécution de scripts
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Content-Security-Policy', "default-src 'none'");
+    // Pour les images/vidéos, forcer le type de contenu
+    const ext = path.extname(filePath).toLowerCase();
+    const mimeTypes = {
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.gif': 'image/gif',
+      '.webp': 'image/webp',
+      '.mp4': 'video/mp4',
+      '.webm': 'video/webm',
+      '.mp3': 'audio/mpeg',
+      '.pdf': 'application/pdf'
+    };
+    if (mimeTypes[ext]) {
+      res.setHeader('Content-Type', mimeTypes[ext]);
+    }
+  }
+}));
+
+app.use('/rss', express.static(path.join(__dirname, '../rss'), {
+  setHeaders: (res) => {
+    res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+  }
+}));
+
+// Configuration Multer sécurisée pour l'upload de fichiers
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     const uploadDir = path.join(__dirname, '../uploads');
@@ -27,27 +111,89 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${uuidv4()}${path.extname(file.originalname)}`;
+    // Générer un nom de fichier sécurisé avec UUID
+    const ext = path.extname(file.originalname).toLowerCase();
+    // Valider l'extension
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.webm', '.mp3', '.pdf'];
+    if (!allowedExtensions.includes(ext)) {
+      return cb(new Error('Extension de fichier non autorisée'));
+    }
+    const uniqueName = `${Date.now()}-${uuidv4()}${ext}`;
     cb(null, uniqueName);
   }
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max par fichier
+    files: 11 // 1 thumbnail + 10 médias max
+  },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif|webp|mp4|mp3|pdf|webm/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    if (extname && mimetype) {
-      cb(null, true);
-    } else {
-      cb(new Error('Type de fichier non supporté'));
+    // Liste blanche des types MIME
+    const allowedMimeTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+      'video/mp4',
+      'video/webm',
+      'audio/mpeg',
+      'application/pdf'
+    ];
+
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      return cb(new Error('Type MIME non autorisé'));
     }
+
+    // Vérifier l'extension
+    const ext = path.extname(file.originalname).toLowerCase();
+    const mimeToExt = {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/gif': ['.gif'],
+      'image/webp': ['.webp'],
+      'video/mp4': ['.mp4'],
+      'video/webm': ['.webm'],
+      'audio/mpeg': ['.mp3'],
+      'application/pdf': ['.pdf']
+    };
+
+    if (!mimeToExt[file.mimetype]?.includes(ext)) {
+      return cb(new Error('L\'extension ne correspond pas au type de fichier'));
+    }
+
+    cb(null, true);
   }
 });
 
-// Chemin du fichier de données
+// Middleware de validation des fichiers uploadés (vérifie les magic bytes)
+async function validateUploadedFiles(req, res, next) {
+  const files = [];
+
+  if (req.files?.thumbnail) files.push(...req.files.thumbnail);
+  if (req.files?.media) files.push(...req.files.media);
+
+  for (const file of files) {
+    const validation = await validateFileType(file.path, file.mimetype);
+    if (!validation.valid) {
+      // Supprimer le fichier invalide
+      try {
+        await fs.unlink(file.path);
+      } catch (e) {
+        // Ignorer les erreurs de suppression
+      }
+      return res.status(400).json({
+        error: 'Fichier invalide',
+        details: validation.reason
+      });
+    }
+  }
+
+  next();
+}
+
+// Chemins des fichiers de données
 const DATA_FILE = path.join(__dirname, '../data/posts.json');
 const RSS_FILE = path.join(__dirname, '../rss/feed.xml');
 const CONFIG_FILE = path.join(__dirname, '../data/config.json');
@@ -77,17 +223,22 @@ async function initializeData() {
       link: 'http://localhost:3001',
       language: 'fr-FR',
       copyright: `© ${new Date().getFullYear()}`,
-      managingEditor: 'editor@example.com',
-      webMaster: 'webmaster@example.com'
+      managingEditor: '',
+      webMaster: ''
     };
     await fs.writeFile(CONFIG_FILE, JSON.stringify(defaultConfig, null, 2));
   }
 }
 
-// Lire les posts
+// Lire les posts avec gestion d'erreur
 async function getPosts() {
-  const data = await fs.readFile(DATA_FILE, 'utf-8');
-  return JSON.parse(data);
+  try {
+    const data = await fs.readFile(DATA_FILE, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Erreur lecture posts:', error);
+    return [];
+  }
 }
 
 // Sauvegarder les posts
@@ -97,13 +248,29 @@ async function savePosts(posts) {
 
 // Lire la config
 async function getConfig() {
-  const data = await fs.readFile(CONFIG_FILE, 'utf-8');
-  return JSON.parse(data);
+  try {
+    const data = await fs.readFile(CONFIG_FILE, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Erreur lecture config:', error);
+    return {};
+  }
 }
 
 // Sauvegarder la config
 async function saveConfig(config) {
   await fs.writeFile(CONFIG_FILE, JSON.stringify(config, null, 2));
+}
+
+// Supprimer un fichier uploadé
+async function deleteUploadedFile(filePath) {
+  if (!filePath || !isValidMediaPath(filePath)) return;
+  const fullPath = path.join(__dirname, '..', filePath);
+  try {
+    await fs.unlink(fullPath);
+  } catch (e) {
+    // Fichier déjà supprimé ou inexistant
+  }
 }
 
 // Routes API
@@ -114,6 +281,7 @@ app.get('/api/posts', async (req, res) => {
     const posts = await getPosts();
     res.json(posts);
   } catch (error) {
+    console.error('GET /api/posts error:', error);
     res.status(500).json({ error: 'Erreur lors de la récupération des posts' });
   }
 });
@@ -121,125 +289,203 @@ app.get('/api/posts', async (req, res) => {
 // GET - Récupérer un post par ID
 app.get('/api/posts/:id', async (req, res) => {
   try {
+    const { id } = req.params;
+
+    // Valider l'UUID
+    if (!isValidUUID(id)) {
+      return res.status(400).json({ error: 'ID invalide' });
+    }
+
     const posts = await getPosts();
-    const post = posts.find(p => p.id === req.params.id);
+    const post = posts.find(p => p.id === id);
+
     if (!post) {
       return res.status(404).json({ error: 'Post non trouvé' });
     }
+
     res.json(post);
   } catch (error) {
+    console.error('GET /api/posts/:id error:', error);
     res.status(500).json({ error: 'Erreur lors de la récupération du post' });
   }
 });
 
 // POST - Créer un nouveau post
-app.post('/api/posts', upload.fields([
-  { name: 'thumbnail', maxCount: 1 },
-  { name: 'media', maxCount: 10 }
-]), async (req, res) => {
-  try {
-    const posts = await getPosts();
-    const { title, content, author, pubDate } = req.body;
+app.post('/api/posts',
+  uploadLimiter,
+  upload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'media', maxCount: 10 }
+  ]),
+  validateUploadedFiles,
+  async (req, res) => {
+    try {
+      const { title, content, author, pubDate } = req.body;
 
-    const thumbnail = req.files?.thumbnail?.[0]
-      ? `/uploads/${req.files.thumbnail[0].filename}`
-      : null;
+      // Valider les données
+      const validation = validatePostData({ title, content, author, pubDate });
+      if (!validation.valid) {
+        return res.status(400).json({ error: 'Données invalides', details: validation.errors });
+      }
 
-    const media = req.files?.media
-      ? req.files.media.map(file => ({
-          url: `/uploads/${file.filename}`,
-          type: file.mimetype,
-          name: file.originalname
-        }))
-      : [];
+      const posts = await getPosts();
 
-    const newPost = {
-      id: uuidv4(),
-      title,
-      content,
-      author,
-      pubDate: pubDate || new Date().toISOString(),
-      thumbnail,
-      media,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
+      // Traiter la vignette
+      const thumbnail = req.files?.thumbnail?.[0]
+        ? `/uploads/${req.files.thumbnail[0].filename}`
+        : null;
 
-    posts.unshift(newPost);
-    await savePosts(posts);
-    await regenerateRSS();
+      // Traiter les médias avec sanitization des noms
+      const media = req.files?.media
+        ? req.files.media.map(file => ({
+            url: `/uploads/${file.filename}`,
+            type: file.mimetype,
+            name: sanitizeText(file.originalname, 255)
+          }))
+        : [];
 
-    res.status(201).json(newPost);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erreur lors de la création du post' });
+      const newPost = {
+        id: uuidv4(),
+        title: sanitizeText(title, 500),
+        content: sanitizeHtml(content), // Sanitize le HTML
+        author: sanitizeText(author, 200),
+        pubDate: pubDate ? new Date(pubDate).toISOString() : new Date().toISOString(),
+        thumbnail,
+        media,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      posts.unshift(newPost);
+      await savePosts(posts);
+      await regenerateRSS();
+
+      res.status(201).json(newPost);
+    } catch (error) {
+      console.error('POST /api/posts error:', error);
+      res.status(500).json({ error: 'Erreur lors de la création du post' });
+    }
   }
-});
+);
 
 // PUT - Mettre à jour un post
-app.put('/api/posts/:id', upload.fields([
-  { name: 'thumbnail', maxCount: 1 },
-  { name: 'media', maxCount: 10 }
-]), async (req, res) => {
-  try {
-    const posts = await getPosts();
-    const index = posts.findIndex(p => p.id === req.params.id);
+app.put('/api/posts/:id',
+  uploadLimiter,
+  upload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'media', maxCount: 10 }
+  ]),
+  validateUploadedFiles,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
 
-    if (index === -1) {
-      return res.status(404).json({ error: 'Post non trouvé' });
+      // Valider l'UUID
+      if (!isValidUUID(id)) {
+        return res.status(400).json({ error: 'ID invalide' });
+      }
+
+      const posts = await getPosts();
+      const index = posts.findIndex(p => p.id === id);
+
+      if (index === -1) {
+        return res.status(404).json({ error: 'Post non trouvé' });
+      }
+
+      const { title, content, author, pubDate, existingMedia } = req.body;
+
+      // Valider les données si elles sont fournies
+      if (title || content || author) {
+        const validation = validatePostData({
+          title: title || posts[index].title,
+          content: content || posts[index].content,
+          author: author || posts[index].author,
+          pubDate: pubDate || posts[index].pubDate
+        });
+        if (!validation.valid) {
+          return res.status(400).json({ error: 'Données invalides', details: validation.errors });
+        }
+      }
+
+      // Gérer la vignette
+      let thumbnail = posts[index].thumbnail;
+      if (req.files?.thumbnail?.[0]) {
+        // Supprimer l'ancienne vignette si elle existe
+        await deleteUploadedFile(posts[index].thumbnail);
+        thumbnail = `/uploads/${req.files.thumbnail[0].filename}`;
+      } else if (req.body.removeThumbnail === 'true') {
+        await deleteUploadedFile(posts[index].thumbnail);
+        thumbnail = null;
+      }
+
+      // Gérer les médias existants avec validation
+      let media = [];
+      if (existingMedia) {
+        try {
+          const parsed = JSON.parse(existingMedia);
+          media = validateExistingMedia(parsed);
+        } catch (e) {
+          return res.status(400).json({ error: 'Format des médias existants invalide' });
+        }
+      }
+
+      // Ajouter les nouveaux médias
+      if (req.files?.media) {
+        const newMedia = req.files.media.map(file => ({
+          url: `/uploads/${file.filename}`,
+          type: file.mimetype,
+          name: sanitizeText(file.originalname, 255)
+        }));
+        media = [...media, ...newMedia];
+      }
+
+      // Mettre à jour le post
+      posts[index] = {
+        ...posts[index],
+        title: title ? sanitizeText(title, 500) : posts[index].title,
+        content: content ? sanitizeHtml(content) : posts[index].content,
+        author: author ? sanitizeText(author, 200) : posts[index].author,
+        pubDate: pubDate ? new Date(pubDate).toISOString() : posts[index].pubDate,
+        thumbnail,
+        media,
+        updatedAt: new Date().toISOString()
+      };
+
+      await savePosts(posts);
+      await regenerateRSS();
+
+      res.json(posts[index]);
+    } catch (error) {
+      console.error('PUT /api/posts/:id error:', error);
+      res.status(500).json({ error: 'Erreur lors de la mise à jour du post' });
     }
-
-    const { title, content, author, pubDate, existingMedia } = req.body;
-
-    let thumbnail = posts[index].thumbnail;
-    if (req.files?.thumbnail?.[0]) {
-      thumbnail = `/uploads/${req.files.thumbnail[0].filename}`;
-    } else if (req.body.removeThumbnail === 'true') {
-      thumbnail = null;
-    }
-
-    let media = [];
-    if (existingMedia) {
-      media = JSON.parse(existingMedia);
-    }
-    if (req.files?.media) {
-      const newMedia = req.files.media.map(file => ({
-        url: `/uploads/${file.filename}`,
-        type: file.mimetype,
-        name: file.originalname
-      }));
-      media = [...media, ...newMedia];
-    }
-
-    posts[index] = {
-      ...posts[index],
-      title: title || posts[index].title,
-      content: content || posts[index].content,
-      author: author || posts[index].author,
-      pubDate: pubDate || posts[index].pubDate,
-      thumbnail,
-      media,
-      updatedAt: new Date().toISOString()
-    };
-
-    await savePosts(posts);
-    await regenerateRSS();
-
-    res.json(posts[index]);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erreur lors de la mise à jour du post' });
   }
-});
+);
 
 // DELETE - Supprimer un post
 app.delete('/api/posts/:id', async (req, res) => {
   try {
+    const { id } = req.params;
+
+    // Valider l'UUID
+    if (!isValidUUID(id)) {
+      return res.status(400).json({ error: 'ID invalide' });
+    }
+
     const posts = await getPosts();
-    const index = posts.findIndex(p => p.id === req.params.id);
+    const index = posts.findIndex(p => p.id === id);
 
     if (index === -1) {
       return res.status(404).json({ error: 'Post non trouvé' });
+    }
+
+    // Supprimer les fichiers associés
+    const postToDelete = posts[index];
+    await deleteUploadedFile(postToDelete.thumbnail);
+    if (postToDelete.media) {
+      for (const m of postToDelete.media) {
+        await deleteUploadedFile(m.url);
+      }
     }
 
     posts.splice(index, 1);
@@ -248,6 +494,7 @@ app.delete('/api/posts/:id', async (req, res) => {
 
     res.json({ message: 'Post supprimé avec succès' });
   } catch (error) {
+    console.error('DELETE /api/posts/:id error:', error);
     res.status(500).json({ error: 'Erreur lors de la suppression du post' });
   }
 });
@@ -258,6 +505,7 @@ app.get('/api/config', async (req, res) => {
     const config = await getConfig();
     res.json(config);
   } catch (error) {
+    console.error('GET /api/config error:', error);
     res.status(500).json({ error: 'Erreur lors de la récupération de la configuration' });
   }
 });
@@ -265,12 +513,20 @@ app.get('/api/config', async (req, res) => {
 // PUT - Mettre à jour la configuration
 app.put('/api/config', async (req, res) => {
   try {
+    // Valider et sanitizer les données de configuration
+    const validation = validateConfigData(req.body);
+    if (!validation.valid) {
+      return res.status(400).json({ error: 'Données invalides', details: validation.errors });
+    }
+
     const config = await getConfig();
-    const updatedConfig = { ...config, ...req.body };
+    const updatedConfig = { ...config, ...validation.sanitized };
     await saveConfig(updatedConfig);
     await regenerateRSS();
+
     res.json(updatedConfig);
   } catch (error) {
+    console.error('PUT /api/config error:', error);
     res.status(500).json({ error: 'Erreur lors de la mise à jour de la configuration' });
   }
 });
@@ -279,6 +535,8 @@ app.put('/api/config', async (req, res) => {
 app.get('/api/rss/download', async (req, res) => {
   try {
     await fs.access(RSS_FILE);
+    res.setHeader('Content-Type', 'application/rss+xml');
+    res.setHeader('Content-Disposition', 'attachment; filename="feed.xml"');
     res.download(RSS_FILE, 'feed.xml');
   } catch {
     res.status(404).json({ error: 'Fichier RSS non trouvé' });
@@ -291,6 +549,7 @@ app.post('/api/rss/regenerate', async (req, res) => {
     await regenerateRSS();
     res.json({ message: 'Flux RSS régénéré avec succès' });
   } catch (error) {
+    console.error('POST /api/rss/regenerate error:', error);
     res.status(500).json({ error: 'Erreur lors de la régénération du flux RSS' });
   }
 });
@@ -303,10 +562,41 @@ async function regenerateRSS() {
   await fs.writeFile(RSS_FILE, rssContent);
 }
 
+// Gestion des erreurs Multer
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ error: 'Fichier trop volumineux (max 10MB)' });
+    }
+    if (error.code === 'LIMIT_FILE_COUNT') {
+      return res.status(400).json({ error: 'Trop de fichiers (max 11)' });
+    }
+    return res.status(400).json({ error: `Erreur d'upload: ${error.message}` });
+  }
+
+  if (error.message) {
+    return res.status(400).json({ error: error.message });
+  }
+
+  next(error);
+});
+
+// Gestion des erreurs générales
+app.use((error, req, res, next) => {
+  console.error('Erreur non gérée:', error);
+  res.status(500).json({ error: 'Erreur interne du serveur' });
+});
+
+// Route 404
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route non trouvée' });
+});
+
 // Démarrer le serveur
 initializeData().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
     console.log(`📡 Flux RSS disponible sur http://localhost:${PORT}/rss/feed.xml`);
+    console.log('🔒 Mode sécurisé activé');
   });
 });

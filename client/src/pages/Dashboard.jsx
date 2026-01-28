@@ -12,6 +12,7 @@ import {
   Search,
   Filter
 } from 'lucide-react'
+import { stripHtml, escapeHtml } from '../utils/sanitize'
 
 function Dashboard() {
   const [posts, setPosts] = useState([])
@@ -156,7 +157,7 @@ function Dashboard() {
                 </h3>
 
                 <p className="text-slate-500 text-sm mb-4 line-clamp-3">
-                  {post.content.replace(/<[^>]*>/g, '')}
+                  {stripHtml(post.content)}
                 </p>
 
                 {/* Meta */}
