@@ -1,0 +1,91 @@
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "Welcome to RSS Generator",
+    "content": "<p>Discover our <strong>RSS feed generator</strong> with a modern and intuitive dashboard.</p><p>This application allows you to:</p><ul><li>Create and manage your RSS posts easily</li><li>Add images and media to your publications</li><li>Automatically generate a valid XML file</li><li>Customize your feed metadata</li></ul><p>Get started now by creating your first post!</p>",
+    "author": "RSS Generator Team",
+    "pubDate": "2025-01-15T10:00:00.000Z",
+    "thumbnail": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80",
+    "media": [
+      {
+        "url": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "dashboard-preview.jpg"
+      }
+    ],
+    "createdAt": "2025-01-15T10:00:00.000Z",
+    "updatedAt": "2025-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+    "title": "Best Practices for an Effective RSS Feed",
+    "content": "<h2>Optimize Your RSS Feed</h2><p>A well-structured RSS feed improves the <em>visibility</em> of your content. Here are some tips:</p><ol><li><strong>Catchy titles</strong>: Use clear and descriptive titles</li><li><strong>Complete descriptions</strong>: Provide enough context</li><li><strong>Quality images</strong>: Thumbnails attract attention</li><li><strong>Regular updates</strong>: Publish fresh content</li></ol><blockquote>A good RSS feed is the key to a loyal audience.</blockquote>",
+    "author": "Marie Dupont",
+    "pubDate": "2025-01-14T14:30:00.000Z",
+    "thumbnail": "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800&q=80",
+    "media": [
+      {
+        "url": "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "analytics-dashboard.jpg"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "content-strategy.jpg"
+      }
+    ],
+    "createdAt": "2025-01-14T14:30:00.000Z",
+    "updatedAt": "2025-01-14T14:30:00.000Z"
+  },
+  {
+    "id": "c3d4e5f6-a7b8-9012-cdef-345678901234",
+    "title": "What's New in Version 1.0",
+    "content": "<p>We are excited to present <strong>version 1.0</strong> of RSS Generator!</p><h3>New Features</h3><ul><li>Modern user interface with Tailwind CSS</li><li>Multiple media uploads (images, videos, PDF)</li><li>Real-time preview mode</li><li>Complete RSS feed configuration</li><li>Enhanced security against XSS injections</li></ul><p>We are already working on the next version with even more features!</p>",
+    "author": "Jean Martin",
+    "pubDate": "2025-01-13T09:15:00.000Z",
+    "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+    "media": [],
+    "createdAt": "2025-01-13T09:15:00.000Z",
+    "updatedAt": "2025-01-13T09:15:00.000Z"
+  },
+  {
+    "id": "d4e5f6a7-b8c9-0123-def0-456789012345",
+    "title": "Guide: Integrating Your RSS Feed into Your Website",
+    "content": "<p>Here's how to easily integrate your RSS feed into your website:</p><h3>1. Add the link tag to your head</h3><pre><code>&lt;link rel=\"alternate\" type=\"application/rss+xml\" title=\"My Feed\" href=\"/rss/feed.xml\" /&gt;</code></pre><h3>2. Display the RSS icon</h3><p>Use a clickable RSS icon to redirect to your feed.</p><h3>3. Share the URL</h3><p>Share your feed URL with your readers so they can subscribe.</p><p>It's as simple as that!</p>",
+    "author": "Sophie Bernard",
+    "pubDate": "2025-01-12T16:45:00.000Z",
+    "thumbnail": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80",
+    "media": [
+      {
+        "url": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "code-example.jpg"
+      }
+    ],
+    "createdAt": "2025-01-12T16:45:00.000Z",
+    "updatedAt": "2025-01-12T16:45:00.000Z"
+  },
+  {
+    "id": "e5f6a7b8-c9d0-1234-ef01-567890123456",
+    "title": "Event: Webinar on Content Syndication",
+    "content": "<p>Join us for a <strong>free webinar</strong> on content syndication via RSS.</p><h3>On the agenda:</h3><ul><li>Introduction to RSS and Atom feeds</li><li>RSS Generator demonstration</li><li>Q&A with our experts</li></ul><p><strong>Date:</strong> January 20, 2025 at 2:00 PM (EST)</p><p><strong>Duration:</strong> 1 hour</p><p>Register now to receive the connection link!</p>",
+    "author": "RSS Generator Team",
+    "pubDate": "2025-01-11T11:00:00.000Z",
+    "thumbnail": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
+    "media": [
+      {
+        "url": "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "webinar-setup.jpg"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&q=80",
+        "type": "image/jpeg",
+        "name": "presentation.jpg"
+      }
+    ],
+    "createdAt": "2025-01-11T11:00:00.000Z",
+    "updatedAt": "2025-01-11T11:00:00.000Z"
+  }
+]
