@@ -54,7 +54,7 @@ function PostForm() {
   const fetchPost = async () => {
     try {
       const post = await api.getPost(id)
-      if (!post) throw new Error('Post non trouvé')
+      if (!post) throw new Error('Post not found')
 
       setFormData({
         title: post.title,
@@ -72,7 +72,7 @@ function PostForm() {
         setExistingMedia(post.media)
       }
     } catch (error) {
-      console.error('Erreur:', error)
+      console.error('Error:', error)
       navigate('/')
     }
     setLoading(false)
@@ -146,13 +146,13 @@ function PostForm() {
       }
 
       if (isDemo) {
-        alert('Mode démo : les modifications ne sont pas sauvegardées')
+        alert('Demo mode: changes are not saved')
       }
 
       navigate('/')
     } catch (error) {
-      console.error('Erreur:', error)
-      alert('Erreur lors de la sauvegarde du post')
+      console.error('Error:', error)
+      alert('Error saving post')
     }
     setSaving(false)
   }
@@ -184,10 +184,10 @@ function PostForm() {
           </button>
           <div>
             <h2 className="text-2xl font-bold text-slate-800">
-              {isEditing ? 'Modifier le Post' : 'Nouveau Post'}
+              {isEditing ? 'Edit Post' : 'New Post'}
             </h2>
             <p className="text-slate-500">
-              {isEditing ? 'Modifiez les informations du post' : 'Créez un nouveau post pour votre flux RSS'}
+              {isEditing ? 'Edit your post information' : 'Create a new post for your RSS feed'}
             </p>
           </div>
         </div>
@@ -201,7 +201,7 @@ function PostForm() {
           }`}
         >
           <Eye className="w-4 h-4" />
-          {previewMode ? 'Éditer' : 'Aperçu'}
+          {previewMode ? 'Edit' : 'Preview'}
         </button>
       </div>
 
@@ -217,16 +217,16 @@ function PostForm() {
           )}
           <div className="p-8">
             <h1 className="text-3xl font-bold text-slate-800 mb-4">
-              {formData.title || 'Titre du post'}
+              {formData.title || 'Post title'}
             </h1>
             <div className="flex items-center gap-4 text-sm text-slate-500 mb-6">
               <span className="flex items-center gap-1">
                 <User className="w-4 h-4" />
-                {formData.author || 'Auteur'}
+                {formData.author || 'Author'}
               </span>
               <span className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
-                {new Date(formData.pubDate).toLocaleDateString('fr-FR', {
+                {new Date(formData.pubDate).toLocaleDateString('en-US', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric'
@@ -236,12 +236,12 @@ function PostForm() {
             <div
               className="prose max-w-none"
               dangerouslySetInnerHTML={{
-                __html: sanitizeHtml(formData.content) || '<p class="text-slate-400">Contenu du post...</p>'
+                __html: sanitizeHtml(formData.content) || '<p class="text-slate-400">Post content...</p>'
               }}
             />
             {(existingMedia.length > 0 || media.length > 0) && (
               <div className="mt-8 pt-6 border-t border-slate-200">
-                <h3 className="text-lg font-semibold text-slate-800 mb-4">Médias attachés</h3>
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">Attached Media</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {existingMedia.map((m, i) => (
                     <div key={`existing-${i}`} className="bg-slate-100 rounded-lg p-3 text-center">
@@ -279,7 +279,7 @@ function PostForm() {
           <div className="bg-white rounded-2xl border border-slate-200 p-6">
             <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
               <Image className="w-5 h-5 text-orange-500" />
-              Image de couverture
+              Cover Image
             </h3>
 
             {thumbnailPreview ? (
@@ -307,7 +307,7 @@ function PostForm() {
                   className="hidden"
                 />
                 <Upload className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <p className="text-slate-500">Cliquez ou glissez une image ici</p>
+                <p className="text-slate-500">Click or drag an image here</p>
                 <p className="text-slate-400 text-sm mt-1">PNG, JPG, GIF, WebP (max 10MB)</p>
               </label>
             )}
@@ -317,13 +317,13 @@ function PostForm() {
           <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
             <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5 text-orange-500" />
-              Informations du post
+              Post Information
             </h3>
 
             {/* Title */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Titre *
+                Title *
               </label>
               <input
                 type="text"
@@ -331,7 +331,7 @@ function PostForm() {
                 value={formData.title}
                 onChange={handleInputChange}
                 required
-                placeholder="Titre de votre post"
+                placeholder="Your post title"
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
               />
             </div>
@@ -341,7 +341,7 @@ function PostForm() {
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
                   <User className="w-4 h-4 inline mr-1" />
-                  Auteur *
+                  Author *
                 </label>
                 <input
                   type="text"
@@ -349,7 +349,7 @@ function PostForm() {
                   value={formData.author}
                   onChange={handleInputChange}
                   required
-                  placeholder="Nom de l'auteur"
+                  placeholder="Author name"
                   className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 />
               </div>
@@ -357,7 +357,7 @@ function PostForm() {
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
                   <Calendar className="w-4 h-4 inline mr-1" />
-                  Date de publication *
+                  Publication Date *
                 </label>
                 <input
                   type="datetime-local"
@@ -373,7 +373,7 @@ function PostForm() {
             {/* Content */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Contenu * <span className="text-slate-400 font-normal">(HTML supporté)</span>
+                Content * <span className="text-slate-400 font-normal">(HTML supported)</span>
               </label>
               <textarea
                 name="content"
@@ -381,11 +381,11 @@ function PostForm() {
                 onChange={handleInputChange}
                 required
                 rows={10}
-                placeholder="Rédigez votre contenu ici... Vous pouvez utiliser du HTML."
+                placeholder="Write your content here... You can use HTML."
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all font-mono text-sm"
               />
               <p className="text-xs text-slate-400 mt-2">
-                Astuce: Utilisez des balises HTML comme &lt;p&gt;, &lt;strong&gt;, &lt;a&gt; pour formater votre contenu
+                Tip: Use HTML tags like &lt;p&gt;, &lt;strong&gt;, &lt;a&gt; to format your content
               </p>
             </div>
           </div>
@@ -394,13 +394,13 @@ function PostForm() {
           <div className="bg-white rounded-2xl border border-slate-200 p-6">
             <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
               <Film className="w-5 h-5 text-orange-500" />
-              Médias additionnels
+              Additional Media
             </h3>
 
             {/* Existing Media */}
             {existingMedia.length > 0 && (
               <div className="mb-6">
-                <p className="text-sm text-slate-500 mb-3">Médias existants</p>
+                <p className="text-sm text-slate-500 mb-3">Existing media</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {existingMedia.map((m, i) => {
                     const Icon = getMediaIcon(m.type)
@@ -431,7 +431,7 @@ function PostForm() {
             {/* New Media */}
             {media.length > 0 && (
               <div className="mb-6">
-                <p className="text-sm text-slate-500 mb-3">Nouveaux médias à ajouter</p>
+                <p className="text-sm text-slate-500 mb-3">New media to add</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {media.map((file, i) => {
                     const Icon = getMediaIcon(file.type)
@@ -474,8 +474,8 @@ function PostForm() {
                 className="hidden"
               />
               <Plus className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-              <p className="text-slate-500 text-sm">Ajouter des médias</p>
-              <p className="text-slate-400 text-xs mt-1">Images, vidéos, audio, PDF</p>
+              <p className="text-slate-500 text-sm">Add media</p>
+              <p className="text-slate-400 text-xs mt-1">Images, videos, audio, PDF</p>
             </label>
           </div>
 
@@ -486,7 +486,7 @@ function PostForm() {
               onClick={() => navigate('/')}
               className="px-6 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all font-medium"
             >
-              Annuler
+              Cancel
             </button>
             <button
               type="submit"
@@ -496,12 +496,12 @@ function PostForm() {
               {saving ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  Sauvegarde...
+                  Saving...
                 </>
               ) : (
                 <>
                   <Save className="w-5 h-5" />
-                  {isEditing ? 'Mettre à jour' : 'Publier'}
+                  {isEditing ? 'Update' : 'Publish'}
                 </>
               )}
             </button>

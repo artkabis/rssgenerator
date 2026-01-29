@@ -1,156 +1,157 @@
 # RSS Feed Generator
 
-Application complète de génération de flux RSS avec dashboard moderne. Permet de créer, gérer et publier des articles avec support multimédia complet.
+A complete RSS feed generation application with a modern dashboard. Create, manage, and publish articles with full multimedia support.
 
-## Table des matières
+## Table of Contents
 
-- [Aperçu du projet](#aperçu-du-projet)
+- [Project Overview](#project-overview)
 - [Architecture](#architecture)
-- [Stack technique](#stack-technique)
+- [Tech Stack](#tech-stack)
 - [Installation](#installation)
 - [Configuration](#configuration)
-- [Sécurité](#sécurité)
-- [API REST](#api-rest)
-- [Déploiement](#déploiement)
-- [Structure du projet](#structure-du-projet)
-- [Historique des corrections](#historique-des-corrections)
-- [Démo](#démo)
+- [Security](#security)
+- [REST API](#rest-api)
+- [Deployment](#deployment)
+- [Project Structure](#project-structure)
+- [Changelog](#changelog)
+- [Demo](#demo)
 
 ---
 
-## Aperçu du projet
+## Project Overview
 
-RSS Feed Generator est une application full-stack permettant de :
+RSS Feed Generator is a full-stack application that allows you to:
 
-- **Créer et gérer des articles** avec un dashboard moderne
-- **Générer des flux RSS 2.0** avec extensions Media RSS
-- **Uploader des médias** (images, vidéos, audio) avec validation sécurisée
-- **Prévisualiser en temps réel** les articles avant publication
-- **Exporter le flux XML** compatible avec tous les lecteurs RSS
+- **Create and manage articles** with a modern dashboard
+- **Generate RSS 2.0 feeds** with Media RSS extensions
+- **Upload media** (images, videos, audio) with secure validation
+- **Preview articles in real-time** before publication
+- **Export XML feeds** compatible with all RSS readers
 
-### Fonctionnalités principales
+### Key Features
 
-| Fonctionnalité | Description |
-|----------------|-------------|
-| Thumbnail | Image principale de l'article |
-| Titre | Titre de l'événement/article |
-| Contenu | Éditeur de contenu riche |
-| Date de publication | Date configurable |
-| Auteur | Attribution de l'auteur |
-| Médias multiples | Pièces jointes (images, vidéos, audio) |
-| Flux XML | Génération automatique RSS 2.0 |
+| Feature | Description |
+|---------|-------------|
+| Thumbnail | Main article image |
+| Title | Event/article title |
+| Content | Rich content editor |
+| Publication Date | Configurable date |
+| Author | Author attribution |
+| Multiple Media | Attachments (images, videos, audio) |
+| XML Feed | Automatic RSS 2.0 generation |
 
 ---
 
 ## Architecture
 
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│                 │     │                 │     │                 │
-│   React Client  │────▶│  Express API    │────▶│   RSS XML File  │
-│   (Vite + TW)   │     │  (Node.js)      │     │   (feed.xml)    │
-│                 │     │                 │     │                 │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-        │                       │
-        │                       ▼
-        │               ┌─────────────────┐
-        │               │                 │
-        └──────────────▶│   Static Mode   │ (GitHub Pages)
-                        │   (mockApi.js)  │
-                        │                 │
-                        └─────────────────┘
+┌───────────────────┐     ┌───────────────────┐     ┌───────────────────┐
+│                   │     │                   │     │                   │
+│   React Client    │────▶│   Express API     │────▶│   RSS XML File    │
+│   (Vite + TW)     │     │   (Node.js)       │     │   (feed.xml)      │
+│                   │     │                   │     │                   │
+└───────────────────┘     └───────────────────┘     └───────────────────┘
+          │                         │
+          │                         ▼
+          │               ┌───────────────────┐
+          │               │                   │
+          │               │   Static Mode     │
+          └──────────────▶│   (GitHub Pages)  │
+                          │   (mockApi.js)    │
+                          │                   │
+                          └───────────────────┘
 ```
 
-### Mode de fonctionnement
+### Operating Modes
 
-1. **Mode Développement** : Client React connecté au serveur Express
-2. **Mode Production** : Client build servi avec le serveur API
-3. **Mode Statique** : Client déployé sur GitHub Pages avec données JSON
+1. **Development Mode**: React client connected to Express server
+2. **Production Mode**: Built client served with API server
+3. **Static Mode**: Client deployed on GitHub Pages with JSON data
 
 ---
 
-## Stack technique
+## Tech Stack
 
 ### Frontend (client/)
 
-| Technologie | Version | Usage |
-|-------------|---------|-------|
-| React | 18.x | Framework UI |
+| Technology | Version | Usage |
+|------------|---------|-------|
+| React | 18.x | UI Framework |
 | Vite | 5.x | Build tool & dev server |
-| Tailwind CSS | 3.x | Styling utilitaire |
-| React Router | 6.x | Navigation SPA (HashRouter) |
-| Lucide React | - | Icônes |
-| date-fns | - | Manipulation des dates |
+| Tailwind CSS | 3.x | Utility styling |
+| React Router | 6.x | SPA Navigation (HashRouter) |
+| Lucide React | - | Icons |
+| date-fns | - | Date manipulation |
 
 ### Backend (server/)
 
-| Technologie | Version | Usage |
-|-------------|---------|-------|
-| Node.js | 20.x | Runtime JavaScript |
-| Express | 4.x | Framework HTTP |
-| Multer | - | Upload de fichiers |
-| xml2js | - | Parsing/génération XML |
-| DOMPurify + jsdom | - | Sanitization XSS |
-| file-type | - | Validation magic bytes |
-| Helmet | - | Headers de sécurité |
+| Technology | Version | Usage |
+|------------|---------|-------|
+| Node.js | 20.x | JavaScript Runtime |
+| Express | 4.x | HTTP Framework |
+| Multer | - | File upload |
+| xml2js | - | XML Parsing/generation |
+| DOMPurify + jsdom | - | XSS Sanitization |
+| file-type | - | Magic bytes validation |
+| Helmet | - | Security headers |
 | express-rate-limit | - | Rate limiting |
-| validator | - | Validation des données |
+| validator | - | Data validation |
 
 ---
 
 ## Installation
 
-### Prérequis
+### Prerequisites
 
-- Node.js 20.x ou supérieur
-- npm 9.x ou supérieur
+- Node.js 20.x or higher
+- npm 9.x or higher
 
-### Installation complète
+### Full Installation
 
 ```bash
-# Cloner le dépôt
+# Clone the repository
 git clone https://github.com/artkabis/rssgenerator.git
 cd rssgenerator
 
-# Installer toutes les dépendances
+# Install all dependencies
 npm run install:all
 
-# Ou manuellement :
+# Or manually:
 npm install
 cd server && npm install && cd ..
 cd client && npm install && cd ..
 ```
 
-### Démarrage
+### Getting Started
 
 ```bash
-# Mode développement (client + serveur)
+# Development mode (client + server)
 npm run dev
 
-# Ou séparément :
+# Or separately:
 npm run dev:server  # http://localhost:3001
 npm run dev:client  # http://localhost:5173
 ```
 
-### Build production
+### Production Build
 
 ```bash
-# Build du client
+# Build the client
 cd client && npm run build
 
-# Le build sera dans client/dist/
+# Build output will be in client/dist/
 ```
 
 ---
 
 ## Configuration
 
-### Variables d'environnement
+### Environment Variables
 
-Créer un fichier `.env` dans le dossier `server/` :
+Create a `.env` file in the `server/` folder:
 
 ```env
-# Serveur
+# Server
 PORT=3001
 NODE_ENV=development
 
@@ -162,29 +163,29 @@ MAX_FILE_SIZE=10485760
 ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3001
 ```
 
-### Configuration RSS (server/data/config.json)
+### RSS Configuration (server/data/config.json)
 
 ```json
 {
-  "title": "Mon Flux RSS",
-  "description": "Description du flux",
-  "link": "https://monsite.com",
-  "language": "fr",
-  "copyright": "2024 MonSite",
-  "author": "Auteur par défaut",
-  "imageUrl": "https://monsite.com/logo.png"
+  "title": "My RSS Feed",
+  "description": "Feed description",
+  "link": "https://mysite.com",
+  "language": "en",
+  "copyright": "2024 MySite",
+  "author": "Default Author",
+  "imageUrl": "https://mysite.com/logo.png"
 }
 ```
 
 ---
 
-## Sécurité
+## Security
 
-### Mesures de sécurité implémentées
+### Implemented Security Measures
 
-L'application intègre plusieurs couches de sécurité conformes aux recommandations OWASP :
+The application integrates multiple security layers following OWASP recommendations:
 
-#### 1. Protection XSS (Cross-Site Scripting)
+#### 1. XSS Protection (Cross-Site Scripting)
 
 ```javascript
 // server/src/security.js
@@ -202,10 +203,10 @@ export function sanitizeHtml(dirty) {
 }
 ```
 
-#### 2. Validation des uploads (Magic Bytes)
+#### 2. Upload Validation (Magic Bytes)
 
 ```javascript
-// Validation du type réel du fichier (pas juste l'extension)
+// Validate actual file type (not just extension)
 import { fileTypeFromBuffer } from 'file-type';
 
 export async function validateFileType(buffer, declaredMimeType) {
@@ -221,14 +222,14 @@ export async function validateFileType(buffer, declaredMimeType) {
   };
 
   if (!detected || !ALLOWED_TYPES[detected.mime]) {
-    throw new Error('Type de fichier non autorisé');
+    throw new Error('File type not allowed');
   }
 
   return detected;
 }
 ```
 
-#### 3. Headers de sécurité (Helmet)
+#### 3. Security Headers (Helmet)
 
 ```javascript
 app.use(helmet({
@@ -249,21 +250,21 @@ app.use(helmet({
 ```javascript
 import rateLimit from 'express-rate-limit';
 
-// Limite globale : 100 requêtes par minute
+// Global limit: 100 requests per minute
 const limiter = rateLimit({
   windowMs: 60 * 1000,
   max: 100,
-  message: { error: 'Trop de requêtes, réessayez plus tard' }
+  message: { error: 'Too many requests, please try again later' }
 });
 
-// Limite uploads : 10 par minute
+// Upload limit: 10 per minute
 const uploadLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 10,
 });
 ```
 
-#### 5. Validation des données
+#### 5. Data Validation
 
 ```javascript
 import validator from 'validator';
@@ -272,31 +273,31 @@ export function validatePostData(data) {
   const errors = [];
 
   if (!data.title || !validator.isLength(data.title, { min: 1, max: 200 })) {
-    errors.push('Titre invalide (1-200 caractères)');
+    errors.push('Invalid title (1-200 characters)');
   }
 
   if (data.link && !validator.isURL(data.link, {
     protocols: ['http', 'https'],
     require_protocol: true
   })) {
-    errors.push('URL invalide');
+    errors.push('Invalid URL');
   }
 
   return errors;
 }
 ```
 
-#### 6. Protection CDATA Injection (RSS XML)
+#### 6. CDATA Injection Protection (RSS XML)
 
 ```javascript
 function escapeCDATA(text) {
   if (!text) return '';
-  // Empêche l'injection via fermeture prématurée de CDATA
+  // Prevent injection via premature CDATA closure
   return text.replace(/\]\]>/g, ']]]]><![CDATA[>');
 }
 ```
 
-#### 7. CORS restrictif
+#### 7. Restrictive CORS
 
 ```javascript
 app.use(cors({
@@ -309,28 +310,28 @@ app.use(cors({
 
 ---
 
-## API REST
+## REST API
 
 ### Endpoints
 
-| Méthode | Route | Description |
-|---------|-------|-------------|
-| GET | `/api/posts` | Liste tous les articles |
-| GET | `/api/posts/:id` | Récupère un article |
-| POST | `/api/posts` | Crée un nouvel article |
-| PUT | `/api/posts/:id` | Modifie un article |
-| DELETE | `/api/posts/:id` | Supprime un article |
-| POST | `/api/upload` | Upload un fichier média |
-| GET | `/api/config` | Récupère la config RSS |
-| PUT | `/api/config` | Modifie la config RSS |
-| GET | `/rss/feed.xml` | Flux RSS généré |
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/api/posts` | List all articles |
+| GET | `/api/posts/:id` | Get an article |
+| POST | `/api/posts` | Create a new article |
+| PUT | `/api/posts/:id` | Update an article |
+| DELETE | `/api/posts/:id` | Delete an article |
+| POST | `/api/upload` | Upload a media file |
+| GET | `/api/config` | Get RSS config |
+| PUT | `/api/config` | Update RSS config |
+| GET | `/rss/feed.xml` | Generated RSS feed |
 
-### Exemple de requête POST /api/posts
+### Example POST /api/posts Request
 
 ```json
 {
-  "title": "Mon article",
-  "content": "<p>Contenu de l'article</p>",
+  "title": "My article",
+  "content": "<p>Article content</p>",
   "author": "John Doe",
   "pubDate": "2024-01-15T10:00:00Z",
   "thumbnail": "/uploads/thumbnail.jpg",
@@ -344,15 +345,15 @@ app.use(cors({
 }
 ```
 
-### Exemple de réponse
+### Example Response
 
 ```json
 {
   "success": true,
   "post": {
     "id": "abc123",
-    "title": "Mon article",
-    "content": "<p>Contenu de l'article</p>",
+    "title": "My article",
+    "content": "<p>Article content</p>",
     "author": "John Doe",
     "pubDate": "2024-01-15T10:00:00Z",
     "thumbnail": "/uploads/thumbnail.jpg",
@@ -365,25 +366,25 @@ app.use(cors({
 
 ---
 
-## Déploiement
+## Deployment
 
-### GitHub Pages (Mode Statique)
+### GitHub Pages (Static Mode)
 
-L'application peut être déployée sur GitHub Pages en mode statique (sans serveur backend).
+The application can be deployed on GitHub Pages in static mode (without backend server).
 
-#### Configuration GitHub Pages
+#### GitHub Pages Configuration
 
-1. **Activer GitHub Pages** dans les paramètres du dépôt :
-   - Aller dans `Settings` > `Pages`
-   - Source : **Deploy from a branch**
-   - Branch : `gh-pages` / `/ (root)`
-   - Cliquer sur "Save"
+1. **Enable GitHub Pages** in repository settings:
+   - Go to `Settings` > `Pages`
+   - Source: **Deploy from a branch**
+   - Branch: `gh-pages` / `/ (root)`
+   - Click "Save"
 
-2. Le workflow CI/CD déploie automatiquement sur la branche `gh-pages` à chaque push.
+2. The CI/CD workflow automatically deploys to the `gh-pages` branch on each push.
 
-#### Fonctionnement du mode statique
+#### Static Mode Operation
 
-Le client détecte automatiquement s'il est en mode statique :
+The client automatically detects if it's in static mode:
 
 ```javascript
 // client/src/api/mockApi.js
@@ -393,36 +394,36 @@ const IS_STATIC_MODE =
   window.location.protocol === 'file:';
 ```
 
-En mode statique, les données sont chargées depuis des fichiers JSON :
-- `/api/posts.json` - Liste des articles
-- `/api/config.json` - Configuration RSS
-- `/rss/feed.xml` - Flux RSS pré-généré
+In static mode, data is loaded from JSON files:
+- `/api/posts.json` - Article list
+- `/api/config.json` - RSS configuration
+- `/rss/feed.xml` - Pre-generated RSS feed
 
-#### Workflow CI/CD
+#### CI/CD Workflow
 
-Le fichier `.github/workflows/ci.yml` gère :
+The `.github/workflows/ci.yml` file handles:
 
-1. **Lint** : Vérification du code
-2. **Build Server** : Test du serveur
-3. **Build Client** : Compilation React
-4. **Validate RSS** : Validation XML du flux
-5. **Deploy Demo** : Déploiement GitHub Pages
+1. **Lint**: Code verification
+2. **Build Server**: Server testing
+3. **Build Client**: React compilation
+4. **Validate RSS**: XML feed validation
+5. **Deploy Demo**: GitHub Pages deployment
 
-### Déploiement serveur (VPS/Cloud)
+### Server Deployment (VPS/Cloud)
 
 ```bash
-# Build du client
+# Build the client
 cd client && npm run build
 
-# Démarrer le serveur en production
+# Start server in production
 cd server
 NODE_ENV=production node src/index.js
 
-# Avec PM2 (recommandé)
+# With PM2 (recommended)
 pm2 start src/index.js --name "rss-generator"
 ```
 
-### Docker (optionnel)
+### Docker (optional)
 
 ```dockerfile
 FROM node:20-alpine
@@ -443,165 +444,175 @@ CMD ["node", "server/src/index.js"]
 
 ---
 
-## Structure du projet
+## Project Structure
 
 ```
 rssgenerator/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml              # Pipeline CI/CD
+│       └── ci.yml              # CI/CD Pipeline
 │
-├── client/                     # Frontend React
+├── client/                     # React Frontend
 │   ├── public/
-│   │   ├── .nojekyll          # Désactive Jekyll sur GH Pages
-│   │   ├── 404.html           # Redirect SPA
-│   │   └── rss-icon.svg       # Icône
+│   │   ├── .nojekyll          # Disable Jekyll on GH Pages
+│   │   ├── 404.html           # SPA Redirect
+│   │   └── rss-icon.svg       # Icon
 │   ├── src/
 │   │   ├── api/
-│   │   │   ├── index.js       # Client API
-│   │   │   └── mockApi.js     # API statique (GH Pages)
+│   │   │   ├── index.js       # API Client
+│   │   │   └── mockApi.js     # Static API (GH Pages)
 │   │   ├── components/
-│   │   │   ├── Dashboard.jsx  # Liste des articles
-│   │   │   ├── PostForm.jsx   # Formulaire création/édition
-│   │   │   ├── PostCard.jsx   # Carte article
-│   │   │   ├── Settings.jsx   # Configuration RSS
-│   │   │   ├── Layout.jsx     # Layout principal
+│   │   │   ├── Dashboard.jsx  # Article list
+│   │   │   ├── PostForm.jsx   # Create/edit form
+│   │   │   ├── PostCard.jsx   # Article card
+│   │   │   ├── Settings.jsx   # RSS Configuration
+│   │   │   ├── Layout.jsx     # Main layout
 │   │   │   └── Sidebar.jsx    # Navigation
 │   │   ├── App.jsx            # Routes (HashRouter)
-│   │   ├── main.jsx           # Point d'entrée
-│   │   └── index.css          # Styles Tailwind
-│   ├── vite.config.js         # Config Vite (base: './')
+│   │   ├── main.jsx           # Entry point
+│   │   └── index.css          # Tailwind styles
+│   ├── vite.config.js         # Vite config (base: './')
 │   └── package.json
 │
-├── server/                     # Backend Express
+├── server/                     # Express Backend
 │   ├── src/
-│   │   ├── index.js           # Serveur principal
-│   │   ├── rssGenerator.js    # Génération XML RSS
-│   │   └── security.js        # Module sécurité
+│   │   ├── index.js           # Main server
+│   │   ├── rssGenerator.js    # RSS XML generation
+│   │   └── security.js        # Security module
 │   ├── data/
-│   │   ├── posts.json         # Stockage articles
-│   │   └── config.json        # Configuration RSS
-│   ├── uploads/               # Fichiers uploadés
+│   │   ├── posts.json         # Article storage
+│   │   └── config.json        # RSS configuration
+│   ├── uploads/               # Uploaded files
 │   ├── rss/
-│   │   └── feed.xml           # Flux RSS généré
+│   │   └── feed.xml           # Generated RSS feed
 │   └── package.json
 │
-├── demo/                       # Données de démo
+├── demo/                       # Demo data
 │   ├── data/
-│   │   ├── posts.json         # 5 articles de test
-│   │   └── config.json        # Config démo
+│   │   ├── posts.json         # 5 test articles
+│   │   └── config.json        # Demo config
 │   └── rss/
-│       └── feed.xml           # Flux RSS démo
+│       └── feed.xml           # Demo RSS feed
 │
-├── scripts/                    # Scripts utilitaires
-│   └── generate-demo.js       # Générateur de démo
+├── scripts/                    # Utility scripts
+│   └── generate-demo.js       # Demo generator
 │
-├── package.json               # Scripts racine
-└── README.md                  # Ce fichier
+├── package.json               # Root scripts
+└── README.md                  # This file
 ```
 
 ---
 
-## Historique des corrections
+## Changelog
 
-### Version initiale
+### Initial Version
 
-- Création de l'application React + Express
-- Dashboard de gestion des articles
-- Génération de flux RSS 2.0 avec Media RSS
+- React + Express application creation
+- Article management dashboard
+- RSS 2.0 feed generation with Media RSS
 
-### Corrections de sécurité (Commit: dba4642)
+### Security Fixes (Commit: dba4642)
 
-| Vulnérabilité | Correction |
-|---------------|------------|
-| XSS via contenu HTML | Sanitization DOMPurify |
-| Upload fichiers malveillants | Validation magic bytes (file-type) |
-| Injection CDATA RSS | Échappement `]]>` |
-| Attaques brute-force | Rate limiting express-rate-limit |
-| Headers manquants | Helmet avec CSP |
-| Validation données | validator.js |
+| Vulnerability | Fix |
+|---------------|-----|
+| XSS via HTML content | DOMPurify sanitization |
+| Malicious file uploads | Magic bytes validation (file-type) |
+| CDATA RSS injection | `]]>` escaping |
+| Brute-force attacks | express-rate-limit |
+| Missing headers | Helmet with CSP |
+| Data validation | validator.js |
 
-### Ajout environnement de démo (Commit: 5e63d52)
+### Demo Environment (Commit: 5e63d52)
 
-- Création du dossier `demo/` avec données de test
-- 5 articles avec images Unsplash (libres de droits)
-- Workflow GitHub Actions CI/CD
-- Validation automatique du flux RSS
+- Created `demo/` folder with test data
+- 5 articles with Unsplash images (royalty-free)
+- GitHub Actions CI/CD workflow
+- Automatic RSS feed validation
 
-### Corrections GitHub Pages (Commits: 985085c, bb17275, 652f391)
+### GitHub Pages Fixes (Commits: 985085c, bb17275, 652f391)
 
-| Problème | Solution |
-|----------|----------|
-| Page blanche | `base: './'` dans vite.config.js |
-| Routes 404 | HashRouter au lieu de BrowserRouter |
-| API non trouvée | mockApi.js avec détection mode statique |
-| Jekyll interférence | Fichier `.nojekyll` |
-| xmllint manquant | Installation `libxml2-utils` dans CI |
-| Pages non activé | Permissions workflow + activation manuelle |
+| Issue | Solution |
+|-------|----------|
+| Blank page | `base: './'` in vite.config.js |
+| 404 routes | HashRouter instead of BrowserRouter |
+| API not found | mockApi.js with static mode detection |
+| Jekyll interference | `.nojekyll` file |
+| Missing xmllint | `libxml2-utils` installation in CI |
+| Pages not enabled | Workflow permissions + manual activation |
 
-### Correction permissions GitHub Pages (Commits précédents)
+### GitHub Pages Permissions Fix (Previous commits)
 
-- Ajout permissions globales au workflow
-- Configuration `concurrency` pour éviter les conflits
-- Suppression de `enablement: true` (nécessite activation manuelle)
+- Added global workflow permissions
+- `concurrency` configuration to avoid conflicts
+- Removed `enablement: true` (requires manual activation)
 
-### Passage au déploiement branche gh-pages (Dernier commit)
+### Switch to gh-pages Branch Deployment (Latest commit)
 
-- Remplacement du déploiement "GitHub Actions" par déploiement branche `gh-pages`
-- Utilisation de `peaceiris/actions-gh-pages@v4` pour push automatique
-- Configuration `force_orphan: true` pour garder la branche propre
-- Plus simple à configurer : juste sélectionner la branche dans les settings
+- Replaced "GitHub Actions" deployment with `gh-pages` branch deployment
+- Using `peaceiris/actions-gh-pages@v4` for automatic push
+- `force_orphan: true` configuration to keep branch clean
+- Simpler to configure: just select the branch in settings
 
 ---
 
-## Démo
+## Demo
 
-### URL de démonstration
+### Demo URL
 
-Une fois GitHub Pages activé, la démo est accessible à :
+Once GitHub Pages is enabled, the demo is accessible at:
 
 **https://artkabis.github.io/rssgenerator/**
 
-### Données de démo incluses
+### Included Demo Data
 
-5 articles de test avec :
-- Images Unsplash (libres de droits)
-- Contenu HTML varié
-- Différents auteurs
-- Dates échelonnées
+5 test articles with:
+- Unsplash images (royalty-free)
+- Various HTML content
+- Different authors
+- Staggered dates
 
-### Activer la démo
+### Enable Demo
 
-1. Aller dans `Settings` > `Pages` du dépôt GitHub
-2. Sélectionner `Source: Deploy from a branch`
-3. Sélectionner la branche `gh-pages` et `/ (root)`
-4. Cliquer sur "Save"
-5. Le workflow crée automatiquement la branche `gh-pages` au prochain push
-
----
-
-## Contribution
-
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/ma-feature`)
-3. Commiter (`git commit -m 'feat: Ma nouvelle feature'`)
-4. Pusher (`git push origin feature/ma-feature`)
-5. Ouvrir une Pull Request
+1. Go to `Settings` > `Pages` in the GitHub repository
+2. Select `Source: Deploy from a branch`
+3. Select the `gh-pages` branch and `/ (root)`
+4. Click "Save"
+5. The workflow automatically creates the `gh-pages` branch on next push
 
 ---
 
-## Licence
+## Easter Egg
 
-MIT License - Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+This project contains a hidden feature! If you're curious, try typing `rss-magic` in the console when viewing the demo. This will trigger a special animation celebrating your discovery.
+
+**Keyword**: `rss-magic`
+
+If someone contacts you mentioning this keyword, they've found the easter egg!
+
+---
+
+## Contributing
+
+1. Fork the project
+2. Create a branch (`git checkout -b feature/my-feature`)
+3. Commit (`git commit -m 'feat: My new feature'`)
+4. Push (`git push origin feature/my-feature`)
+5. Open a Pull Request
+
+---
+
+## License
+
+MIT License - See the [LICENSE](LICENSE) file for more details.
 
 ---
 
 ## Support
 
-Pour signaler un bug ou proposer une amélioration :
-- Ouvrir une [Issue](https://github.com/artkabis/rssgenerator/issues)
-- Ou contacter l'auteur
+To report a bug or suggest an improvement:
+- Open an [Issue](https://github.com/artkabis/rssgenerator/issues)
+- Or contact the author
 
 ---
 
-*Dernière mise à jour : Janvier 2024*
+*Last updated: January 2025*

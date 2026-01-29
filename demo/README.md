@@ -1,57 +1,57 @@
-# Données de démonstration RSS Generator
+# RSS Generator Demo Data
 
-Ce dossier contient les données de test pour valider le fonctionnement de l'application.
+This folder contains test data to validate the application's functionality.
 
 ## Structure
 
 ```
 demo/
 ├── data/
-│   ├── posts.json    # 5 posts de démonstration
-│   └── config.json   # Configuration du flux
+│   ├── posts.json    # 5 demo posts
+│   └── config.json   # Feed configuration
 ├── rss/
-│   └── feed.xml      # Flux RSS pré-généré
+│   └── feed.xml      # Pre-generated RSS feed
 └── README.md
 ```
 
-## Utilisation
+## Usage
 
-### Mode démo local
+### Local Demo Mode
 
-Pour utiliser les données de démo en local :
+To use demo data locally:
 
 ```bash
-# Copier les données vers le serveur
+# Copy data to server
 cp -r demo/data/* server/data/
 cp -r demo/rss/* server/rss/
 
-# Démarrer l'application
+# Start the application
 npm run dev
 ```
 
 ### GitHub Pages
 
-La GitHub Action `ci.yml` déploie automatiquement une version statique sur GitHub Pages avec les données de démo.
+The GitHub Action `ci.yml` automatically deploys a static version on GitHub Pages with demo data.
 
-## Données de test
+## Test Data
 
-### Posts inclus
+### Included Posts
 
-1. **Bienvenue sur RSS Generator** - Introduction à l'application
-2. **Meilleures pratiques RSS** - Conseils d'optimisation
-3. **Nouveautés v1.0** - Changelog des fonctionnalités
-4. **Guide d'intégration** - Tutoriel technique
-5. **Webinaire** - Exemple d'événement
+1. **Welcome to RSS Generator** - Introduction to the application
+2. **Best Practices for RSS** - Optimization tips
+3. **What's New in v1.0** - Feature changelog
+4. **Integration Guide** - Technical tutorial
+5. **Webinar** - Event example
 
-### Médias
+### Media
 
-Toutes les images utilisent des ressources **Unsplash** (licence libre) :
-- Vignettes : 800x600px
-- Médias additionnels : 600x400px
+All images use **Unsplash** resources (royalty-free license):
+- Thumbnails: 800x600px
+- Additional media: 600x400px
 
 ## Validation
 
-Le flux RSS est validé par :
-- `xmllint` pour la syntaxe XML
-- Vérification des éléments RSS requis
-- Test de lecture par le serveur
+The RSS feed is validated by:
+- `xmllint` for XML syntax
+- Required RSS element verification
+- Server read test

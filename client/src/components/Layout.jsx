@@ -11,9 +11,9 @@ function Layout() {
     setIsRegenerating(true)
     try {
       const result = await api.regenerateRSS()
-      alert(isDemo ? 'Mode démo : régénération simulée' : 'Flux RSS régénéré avec succès !')
+      alert(isDemo ? 'Demo mode: regeneration simulated' : 'RSS feed regenerated successfully!')
     } catch (error) {
-      alert('Erreur lors de la régénération')
+      alert('Error during regeneration')
     }
     setIsRegenerating(false)
   }
@@ -52,7 +52,7 @@ function Layout() {
                 }
               >
                 <Home className="w-4 h-4" />
-                <span className="hidden sm:inline">Accueil</span>
+                <span className="hidden sm:inline">Home</span>
               </NavLink>
 
               <NavLink
@@ -66,7 +66,7 @@ function Layout() {
                 }
               >
                 <PlusCircle className="w-4 h-4" />
-                <span className="hidden sm:inline">Nouveau Post</span>
+                <span className="hidden sm:inline">New Post</span>
               </NavLink>
 
               <NavLink
@@ -80,7 +80,7 @@ function Layout() {
                 }
               >
                 <Settings className="w-4 h-4" />
-                <span className="hidden sm:inline">Paramètres</span>
+                <span className="hidden sm:inline">Settings</span>
               </NavLink>
             </nav>
 
@@ -90,10 +90,10 @@ function Layout() {
                 onClick={handleRegenerate}
                 disabled={isRegenerating}
                 className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-all disabled:opacity-50"
-                title="Régénérer le flux RSS"
+                title="Regenerate RSS feed"
               >
                 <RefreshCw className={`w-4 h-4 ${isRegenerating ? 'animate-spin' : ''}`} />
-                <span className="hidden md:inline">Régénérer</span>
+                <span className="hidden md:inline">Regenerate</span>
               </button>
 
               <button
@@ -101,7 +101,7 @@ function Layout() {
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:shadow-lg hover:shadow-orange-200 transition-all font-medium"
               >
                 <Download className="w-4 h-4" />
-                <span className="hidden md:inline">Télécharger RSS</span>
+                <span className="hidden md:inline">Download RSS</span>
               </button>
             </div>
           </div>
@@ -117,7 +117,7 @@ function Layout() {
       <footer className="bg-white border-t border-slate-200 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <p className="text-center text-sm text-slate-500">
-            RSS Generator Dashboard - Flux disponible sur{' '}
+            RSS Generator Dashboard - Feed available at{' '}
             <a
               href="/rss/feed.xml"
               target="_blank"

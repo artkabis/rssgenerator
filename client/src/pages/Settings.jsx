@@ -40,7 +40,7 @@ function Settings() {
       const data = await api.getConfig()
       setConfig(data)
     } catch (error) {
-      console.error('Erreur lors du chargement de la configuration:', error)
+      console.error('Error loading configuration:', error)
     }
     setLoading(false)
   }
@@ -61,8 +61,8 @@ function Settings() {
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (error) {
-      console.error('Erreur:', error)
-      alert('Erreur lors de la sauvegarde de la configuration')
+      console.error('Error:', error)
+      alert('Error saving configuration')
     }
     setSaving(false)
   }
@@ -101,10 +101,10 @@ function Settings() {
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
           <SettingsIcon className="w-7 h-7 text-orange-500" />
-          Paramètres du flux RSS
+          RSS Feed Settings
         </h2>
         <p className="text-slate-500 mt-1">
-          Configurez les informations générales de votre flux RSS
+          Configure the general information for your RSS feed
         </p>
       </div>
 
@@ -112,7 +112,7 @@ function Settings() {
       <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-6 mb-8 text-white">
         <div className="flex items-center gap-3 mb-4">
           <Rss className="w-6 h-6" />
-          <h3 className="text-lg font-semibold">URL de votre flux RSS</h3>
+          <h3 className="text-lg font-semibold">Your RSS Feed URL</h3>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex-1 bg-white/20 backdrop-blur rounded-lg px-4 py-3 font-mono text-sm">
@@ -123,7 +123,7 @@ function Settings() {
             className="flex items-center gap-2 px-4 py-3 bg-white/20 hover:bg-white/30 rounded-lg transition-all"
           >
             {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-            {copied ? 'Copié !' : 'Copier'}
+            {copied ? 'Copied!' : 'Copy'}
           </button>
           <a
             href="/rss/feed.xml"
@@ -132,7 +132,7 @@ function Settings() {
             className="flex items-center gap-2 px-4 py-3 bg-white/20 hover:bg-white/30 rounded-lg transition-all"
           >
             <ExternalLink className="w-5 h-5" />
-            Ouvrir
+            Open
           </a>
         </div>
       </div>
@@ -144,14 +144,14 @@ function Settings() {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
               <FileText className="w-4 h-4 text-orange-500" />
-              Titre du flux
+              Feed Title
             </label>
             <input
               type="text"
               name="title"
               value={config.title}
               onChange={handleInputChange}
-              placeholder="Mon Super Flux RSS"
+              placeholder="My Awesome RSS Feed"
               className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
             />
           </div>
@@ -167,7 +167,7 @@ function Settings() {
               value={config.description}
               onChange={handleInputChange}
               rows={3}
-              placeholder="Une description de votre flux RSS..."
+              placeholder="A description of your RSS feed..."
               className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
             />
           </div>
@@ -176,18 +176,18 @@ function Settings() {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
               <Globe className="w-4 h-4 text-orange-500" />
-              URL du site web
+              Website URL
             </label>
             <input
               type="url"
               name="link"
               value={config.link}
               onChange={handleInputChange}
-              placeholder="https://monsite.com"
+              placeholder="https://mysite.com"
               className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
             />
             <p className="text-xs text-slate-400 mt-1">
-              L'URL de base utilisée pour construire les liens dans le flux RSS
+              The base URL used to build links in the RSS feed
             </p>
           </div>
 
@@ -195,7 +195,7 @@ function Settings() {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
               <Languages className="w-4 h-4 text-orange-500" />
-              Langue
+              Language
             </label>
             <select
               name="language"
@@ -232,7 +232,7 @@ function Settings() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
                 <Mail className="w-4 h-4 text-orange-500" />
-                Email de l'éditeur
+                Editor Email
               </label>
               <input
                 type="email"
@@ -247,7 +247,7 @@ function Settings() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
                 <Mail className="w-4 h-4 text-orange-500" />
-                Email du webmaster
+                Webmaster Email
               </label>
               <input
                 type="email"
@@ -266,7 +266,7 @@ function Settings() {
           {saved && (
             <span className="flex items-center gap-2 text-green-600 animate-fadeIn">
               <Check className="w-5 h-5" />
-              Configuration sauvegardée !
+              Configuration saved!
             </span>
           )}
           <button
@@ -277,12 +277,12 @@ function Settings() {
             {saving ? (
               <>
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                Sauvegarde...
+                Saving...
               </>
             ) : (
               <>
                 <Save className="w-5 h-5" />
-                Sauvegarder
+                Save
               </>
             )}
           </button>
@@ -291,24 +291,24 @@ function Settings() {
 
       {/* Help Section */}
       <div className="mt-12 bg-slate-50 rounded-2xl p-6">
-        <h3 className="font-semibold text-slate-800 mb-4">Comment utiliser votre flux RSS ?</h3>
+        <h3 className="font-semibold text-slate-800 mb-4">How to use your RSS feed?</h3>
         <ul className="space-y-3 text-sm text-slate-600">
           <li className="flex items-start gap-2">
             <span className="w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</span>
-            <span>Copiez l'URL de votre flux RSS ci-dessus</span>
+            <span>Copy your RSS feed URL above</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</span>
-            <span>Collez-la dans votre lecteur RSS préféré (Feedly, Inoreader, etc.)</span>
+            <span>Paste it into your favorite RSS reader (Feedly, Inoreader, etc.)</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0">3</span>
-            <span>Ou intégrez-la dans votre site web avec une balise link</span>
+            <span>Or embed it in your website with a link tag</span>
           </li>
         </ul>
         <div className="mt-4 p-4 bg-slate-800 rounded-lg">
           <code className="text-sm text-green-400">
-            &lt;link rel="alternate" type="application/rss+xml" title="Mon flux" href="/rss/feed.xml" /&gt;
+            &lt;link rel="alternate" type="application/rss+xml" title="My feed" href="/rss/feed.xml" /&gt;
           </code>
         </div>
       </div>
